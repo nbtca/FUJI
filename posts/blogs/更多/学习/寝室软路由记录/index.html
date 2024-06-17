@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="寝室软路由记录 - 拔电关机"><meta name="description" content="寝室软路由的记录，unraid的折腾和各种体验，文件存储，离线下载，游戏服务器……"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%9B%B4%E5%A4%9A/%E5%AD%A6%E4%B9%A0/%E5%AF%9D%E5%AE%A4%E8%BD%AF%E8%B7%AF%E7%94%B1%E8%AE%B0%E5%BD%95/"><meta property="og:title" content="寝室软路由记录 - 拔电关机"><meta property="og:description" content="寝室软路由的记录，unraid的折腾和各种体验，文件存储，离线下载，游戏服务器……"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%9B%B4%E5%A4%9A/%E5%AD%A6%E4%B9%A0/%E5%AF%9D%E5%AE%A4%E8%BD%AF%E8%B7%AF%E7%94%B1%E8%AE%B0%E5%BD%95/"><meta property="twitter:title" content="寝室软路由记录 - 拔电关机"><meta property="twitter:description" content="寝室软路由的记录，unraid的折腾和各种体验，文件存储，离线下载，游戏服务器……"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">学习 </span> <span class="category-eyebrow__date">2022 年 3 月 12 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">寝室软路由记录</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">寝室软路由的记录，unraid的折腾和各种体验，文件存储，离线下载，游戏服务器……</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/学习" class="tag"> 学习 </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h1 class="page-body-header" id="寝室软路由记录">寝室软路由记录</h1>
+<blockquote>
+<p>本文事件开始于 2020 年 5 月，部分内容可能不适用于当下，提及的硬件价格请以市场价格为准。</p>
+</blockquote>
+<h2 class="page-body-header" id="起因">起因</h2>
+<div class="page-body-copy">说是软路由，实际上更像是一个低功耗的服务器了。除了路由系统之外，也可以作为一个 NAS 来使用，或者是在上面部署一些自己的服务。</div>
+<div class="page-body-copy">决定组一台软路由的直接原因由于时间隔得太久，已经记不清了。但是装软路由的念头是从很久之前就有了。配一台电脑，有一个折腾的机会本身就是很让人感到兴奋的事了，再加上从最开始 linus<a href="https://www.bilibili.com/video/BV1vx411B7Db">视频</a>里的服务器，到现在很多视频创作者分享的使用服务器储存，压制素材的经验，看到服务器给他们带来的便利，自己就也想体验一下了。</div>
+<div class="page-body-copy">同时在寝室应用场景下，对于多设备网络连接和文件存储共享的需求比较强烈。一台服务器刚好能够覆盖我们的需求。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/jnNsb2.D_VUFkEw_21OzWm.webp" alt="LTT" width="1131" height="798" loading="lazy" decoding="async"></div>
+<h2 class="page-body-header" id="路程">路程</h2>
+<h3 class="page-body-header" id="选择">选择</h3>
+<h4 class="page-body-header" id="硬件">硬件</h4>
+<div class="page-body-copy">在论坛上看到了很多 j1900 的方案，我们最开始也是选择了 J1900，但在某次机缘巧合下体验到它的性能之后就开始对选择产生了怀疑。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/20220312212521.vTehflAD_Z20GDNa.webp" alt="j1900" width="446" height="692" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">之后也看到了和 j1900 类似但是性能强一点的方案， 但是总还是看着感觉不靠谱。后来在 chh 上看到了一个用速龙 200ge 的方案，看起来靠谱很多，性能也够用，但是 TDP 和价格都高出不少。选择陷入了僵局。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/20220312213204.CdqjtAC5_Z22mdRd.webp" alt="速龙200ge" width="2339" height="1770" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">转机发生在看到了某位即将毕业学长发出的出售信息，学长的价格非常优惠。我们收购后，出售了功耗较高的部件，售后多余的资金和留下的机箱，磁盘等部件使得我们能够接受速龙 200ge 的价格，完成了软路由主机的配置。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/58769db089e54955afcda8adbda96706.CdGujcpo_eAYPM.webp" alt="出售信息" width="1080" height="348" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/b709751067bc4bf0ae6c7d47faa5507d.lt_g58ao_ZelJx9.webp" alt="板U套装" width="1050" height="411" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/0cffb62a9bd44a8794e39b8204af3c3c.CZXwBfHO_Z1atEmW.webp" alt="" width="1125" height="723" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/bdc30a798d5f400dbc7cadd4212fcdae.BNjgCxGc_2ugyv5.webp" alt="" width="1045" height="402" loading="lazy" decoding="async"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th></th><th>配件</th><th>价格</th></tr></thead><tbody><tr><td>CPU</td><td>AMD 速龙 200ge</td><td>-（和主板一起）</td></tr><tr><td>主板</td><td>华擎 A320M</td><td>489</td></tr><tr><td>散热</td><td>AMD“幽灵”棱镜 (Wraith Prism)</td><td>12（朋友装机剩下的，只付了邮费）</td></tr><tr><td>内存</td><td>DDR4 8GB 2666</td><td>125</td></tr><tr><td>显卡</td><td>Radeon™ Vega 3 Graphics 核显</td><td>-</td></tr><tr><td>网卡</td><td>英特尔 82576EB 双口千兆</td><td>104</td></tr><tr><td>机箱</td><td>收购再利用</td><td>-</td></tr><tr><td>电源</td><td>先马 金牌 500W</td><td>-</td></tr><tr><td>SSD</td><td>西数 SSD 240GB</td><td>-（收购再利用）</td></tr><tr><td>HDD</td><td>希捷 HDD 1TB</td><td>-</td></tr><tr><td></td><td>希捷 HDD 500GB</td><td>-</td></tr><tr><td></td><td>西数 HDD 500GB</td><td>-</td></tr></tbody></table>
+<div class="page-body-copy">电源和机械盘都是从家里拿来的之前用剩下的。最后抵扣出售二手部件的收入，总价格大概在 200-300 元。</div>
+<h4 class="page-body-header" id="软件">软件</h4>
+<div class="page-body-copy">在系统的选择上我们没有怎么纠结，直接选择了 Unraid。</div>
+<div class="page-body-copy">考虑到出发点不是主要在存储上，对读写速度以及数据安全并没有太大的的要求，甚至存在上面的文件部分丢失应该也是可以接受的，我们就觉得 Unraid 这种可以后续添加硬盘的方式相比于 raid 会更加适合我们。Unraid 上可以友好的使用虚拟机和 Docker 也能让我们便利的部署一些自己的服务。再加上在 Linus 的视频里很多次看他用到了 Unraid，也想自己尝试一下。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/uUVHli.BOKoRvNF_Z2iLgOY.webp" alt="第一次见到unraid" width="1108" height="782" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">在路由系统上，由于之前在路由器上刷过 openwrt，对它的一些设置感觉已经有点熟练了，也成功实现校园网的拨号，这里就直接选择了继续使用 openwrt。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/DfcfL0.BnSGRpMp_1gwOoy.webp" alt="openwrt" width="1416" height="508" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">使用的固件出于网络等原因没有选择自己编译，在<a href="https://www.right.com.cn/forum/">恩山论坛</a>上找了一个固件直接拿来用了。（具体的帖子已经找不到了。。。）</div>
+<div class="page-body-copy"><img  src="/Home/_astro/Oj6hze.Tq5dssre_Z27fyzX.webp" alt="恩山无线论坛" width="1623" height="766" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="组装配置">组装&#x26;配置</h3>
+<div class="page-body-copy">组装和配置的过程没有什么难的部分，跟着教程走就可以了。我们在配置的时候遇到的问题都是教程没有看清楚导致的。胆大心细，应该就没什么问题了。</div>
+<h4 class="page-body-header" id="硬件部分">硬件部分</h4>
+<div class="page-body-copy">这里就只放几张组装时拍的图了。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/20220312214619.CTqcnqM-_ZQIWhq.webp" alt="cpu" width="2502" height="1415" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/20220312214440.BEWzboUY_1mUeVj.webp" alt="网卡" width="2899" height="1637" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/20220312214337.D8akO_FK_1VeAoj.webp" alt="开机" width="2695" height="1467" loading="lazy" decoding="async"></div>
+<h4 class="page-body-header" id="软件部分">软件部分</h4>
+<div class="page-body-copy">Unraid 的部分参考 b 站上司波图的<a href="https://www.bilibili.com/video/BV1nE411B73Y">教程</a>就行了，讲的非常仔细，注意不要睡着就可以了。</div>
+<h2 class="page-body-header" id=""><img  src="/Home/_astro/20220312214716.I9uIioCJ_ZzVQdd.webp" alt="Unraid教程" width="337" height="414" loading="lazy" decoding="async"></h2>
+<h2 class="page-body-header" id="体验">体验</h2>
+<h3 class="page-body-header" id="储存">储存</h3>
+<div class="page-body-copy">这个感觉是带来的最大便利。平时的一些学习资料或者游戏之类的大文件放在上面寝室里传一下很方便，出去帮忙修电脑的时候也可以直接用 ftp 连回来找一点工具或者安装包这种，活动要用的文件放在上面也方便参加的人直接去拿。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/a19adc7c1f1644cab755c52557b6c39d.B0sv9Web_Z6HIhD.webp" alt="" width="1016" height="580" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">Mac 也可以用 Time Machine 备份在上面，用起来会安心一点。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/ad53676ed8604c47bdfc11626c82bf8d.adQxnlvY_nGVkV.webp" alt="" width="658" height="448" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="网络">网络</h3>
+<div class="page-body-copy">在 openwrt 上使用校园网拨号上网，可以多设备连接。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/449e3766442942fd900d42257d98a143.BmLKPITW_Zry4Kw.webp" alt="" width="1855" height="1425" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">最后网络的布置是这样的。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/c44da6e39be844a7880a8933b2a8d3d6.CuHDm5SC_1Tc89I.webp" alt="" width="843" height="512" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="unraid">Unraid</h3>
+<div class="page-body-copy">Unraid 用起来感觉还可以，比较适合我们这种陆续加硬盘的情况。图中的几块硬盘除了做缓存的固态，其余的都是从家里带来的旧硬盘。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/5ddecb4846354f308fd6b4402c24ef44.w0CeJe2w_2v6QPb.webp" alt="" width="627" height="306" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">自带的 docker 和虚拟机用起来感觉都很方便。</div>
+<div class="page-body-copy">v2ray 可以方便寝室里没有买校园网的几位室友连回寝室来上网，稍微省一点流量。</div>
+<div class="page-body-copy">aria2 可以在校园网范围内控制远程下载，在下载大文件时比较方便。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/c5289004de6d4fc2bcb88eda253d2586.BFik2j4N_Z2mLDkr.webp" alt="docker运行的服务" width="643" height="184" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">我们在上面开了两个虚拟机。一个装了 openwrt 做路由器，另一个装了 ubuntu，在需要部署一些服务的时候会用到。</div>
+<div class="page-body-copy">在上面曾经部署过一个内网的 minecraft 服务器，实现校园网内部联机。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/2a79fe27baf444f18c22804cedcd1f92.CQDYZi2X_Z20q2xX.webp" alt="" width="626" height="113" loading="lazy" decoding="async"></div>
+<h2 class="page-body-header" id="总结">总结</h2>
+<div class="page-body-copy">总而言之，整套系统无论是文件存储还是 docker 应用部署，都十分便利。站在今天的角度上来看，当初选购 200ge 无疑是十分正确的选择，在购买后，市场上的 200ge 也出现了大幅涨价的现象。但是 A320 主板购入的价格略高，目前在闲鱼上 100 元左右应该就可以买到了。搭建这台软路由让我们大量接触到了计算机网络以及 linux 方面的知识，受益良多，在之后课程的学习上也有了可以实际参考的经验。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/1752ab3dc7184f5cb69d4c76f743ba0e.Bb77mbvF_Z1U4G8L.webp" alt="两年之后的运行状况" width="4032" height="3024" loading="lazy" decoding="async"></div></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 3 月 12 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>

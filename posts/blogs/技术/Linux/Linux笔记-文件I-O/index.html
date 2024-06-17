@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="Linux笔记 - 文件I/O - 拔电关机"><meta name="description" content="有关linux文件io的一系列笔记。"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Linux/Linux%E7%AC%94%E8%AE%B0-%E6%96%87%E4%BB%B6I-O/"><meta property="og:title" content="Linux笔记 - 文件I/O - 拔电关机"><meta property="og:description" content="有关linux文件io的一系列笔记。"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Linux/Linux%E7%AC%94%E8%AE%B0-%E6%96%87%E4%BB%B6I-O/"><meta property="twitter:title" content="Linux笔记 - 文件I/O - 拔电关机"><meta property="twitter:description" content="有关linux文件io的一系列笔记。"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">技术 </span> <span class="category-eyebrow__date">2022 年 3 月 19 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">Linux笔记 - 文件I/O</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">有关linux文件io的一系列笔记。</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/技术" class="tag"> 技术 </a><a href="/tags/Linux" class="tag"> Linux </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h2 class="page-body-header" id="linux-文件系统结构">Linux 文件系统结构</h2>
+<div class="page-body-copy">文件结构是文件存放在磁盘等存储设备中的组织方法，主要体现在对文件和目录的组织上，目录提供了管理文件的一个方便而有效的途径，用户能够从一个目录切换到另一个目录，而且可以设置目录和文件的权限，设置文件的共享程度。</div>
+<div class="page-body-copy">Linux 文件系统是目录和文件的一种层次安排，目录的起点称为<strong>根</strong>(root)，其名字是一个字符<code>/</code>目录(directory)是一个包含目录项的文件，在逻辑上可以认为每个目录都包含一个文件名，同时包含说明该文件的信息 ，文件属性是文件类型、文件长度、文件所有者、文件许可权(其他用户是否能访问该文件)、文件最后修改的时间等。</div>
+<div class="page-body-copy">使用 Linux 的用户可以设置目录和文件的权限，以便允许或拒绝其他人对其进行访问，Linux 目录采用多级树形等级结构，用户可以浏览整个系统，可以进入如何一个已授权进入的目录，访问那里的文件。</div>
+<div class="page-body-copy">文件结构的相互关联性使共享数据变得很容易，几个用户可以访问同一个文件。</div>
+<div class="page-body-copy">Linux 是一个<strong>多用户系统</strong>，操作系统本身的驻留程序存放在以根目录开始的专用目录中，有时被指定为系统目录。 <strong>内核</strong>、<strong>Shell</strong>和<strong>文件结构</strong>一起形成了 Linux 的基本操作系统结构。它们使得用户可以允许程序， 管理文件及使用系统。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320093722657.BPLU7J9H_1NnY0k.webp" alt="image-20220320093722657" width="1383" height="768" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="文件类型">文件类型</h3>
+<div class="page-body-copy">在终端输入<code>ls -l</code>命令 系统会打印处当前目录下所有文件的信息。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320100405899.BO1G_O4-_Z224v9c.webp" alt="image-20220320100405899" width="614" height="330" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这些信息包括：<strong>文件类型</strong>、<strong>文件属性</strong>、<strong>用户名</strong>、<strong>用户所在组</strong>、<strong>文件大小</strong>、<strong>修改时间</strong>、<strong>文件名</strong>等。</div>
+<div class="page-body-copy">而其中的第一栏信息是文件类型和文件属性 包含了 10 个字符 分为 4 组：</div>
+<ul>
+<li>第<strong>1</strong>位表示文件的类型；</li>
+<li>第 2 组为<strong>2-4</strong>位 代表文件所有者(User)权限，分别为<strong>读</strong>、<strong>写</strong>、<strong>执行</strong>；</li>
+<li>第 3 组为<strong>5-7</strong>位代表文件所有者的同组用户(Group)的权限，分别为<strong>读</strong>、<strong>写</strong>、<strong>执行</strong>；</li>
+<li>第 4 组为<strong>8-10</strong>位 代表其他组用户(Other)权限，分别为<strong>读</strong>、<strong>写</strong>、<strong>执行</strong>。</li>
+</ul>
+<ol>
+<li><strong>普通文件</strong>：符号是 - 例如保存在磁盘上的 C 文件、可执行的文件以及目录等，这种文件的特性是数据在存储 设备上存放，内核提供了对数据的抽象访问，此种文件为一种<strong>字节流</strong>，访问接口完全独 立于磁盘上的存储数据 ；</li>
+<li><strong>目录文件</strong>：符号是 d ；</li>
+<li><strong>字符设备文件</strong>：符号是 c ，是一种能够像文件一样被访问的设备，例如控制台、串口等 ；</li>
+<li><strong>块设备文件</strong>：符号是 b 磁盘是此类设备文件的典型代表，与普通文件的区别是操作系统对数据的访问进行的<strong>重新的格式设计</strong> ；</li>
+<li><strong>符号链接文件</strong>：符号是 l ；</li>
+<li><strong>socket 文件</strong>：是 UNIX 中通过网络进行通信的方式，对网络的访问可以通过文件描述符实现，访问网络和访问普通文件相似。</li>
+</ol>
+<div class="page-body-copy">在 Linux 中用户空间对各种文件的操作是类似的，因为虚拟文件系统 VFS 同一套 API。</div>
+<h4 class="page-body-header" id="简单实验">简单实验</h4>
+<div class="page-body-copy">文件系统的创建：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320100449488.CA_mQ-RX_Z24eKNH.webp" alt="image-20220320100449488" width="565" height="779" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="基于文件描述符的-io-操作">基于文件描述符的 IO 操作</h3>
+<h4 class="page-body-header" id="文件描述符">文件描述符</h4>
+<div class="page-body-copy">操作系统内核(kernel)利用文件描述符(file descriptor)来访问文件。</div>
+<div class="page-body-copy">文件描述符是一个非负整数，是一个用于描述被打开文件的索引值，它指向该文件的相关信息的记录表。</div>
+<div class="page-body-copy">当内核打开一个现存文或创建一个新文件时，就会返回一个文件描述符，当读、写文件时， 也需要使用文件描述符来指定待读写的文件。</div>
+<h5 class="page-body-header" id="posix-可移植操作系统接口">POSIX 可移植操作系统接口</h5>
+<div class="page-body-copy">文件描述符的有效范围是 0 到 OPEN_MAX 一般来说，每个进程最多打开 1024 个文件(0~ 1023)，这个值可以使用 ulimit -n 命令查看。</div>
+<div class="page-body-copy">文件描述符是由无符号整数表示的句柄，进程使用它来标识打开的文件。</div>
+<div class="page-body-copy">文件描述符与包括相关信息(如文件的打开模式、文件的位置类型、文件的初始类型等)的文件对象相关联，这些信息被称作文件的<strong>上下文</strong>。</div>
+<h5 class="page-body-header" id="标准输入标准输出和标准出错">标准输入、标准输出和标准出错</h5>
+<div class="page-body-copy">在 UNIX\Linux 系统中，每当运行一个新程序时，所有的 shell 都为其打开 3 个文件描述符： 标准输入、标准输出及标准出错，分别对应 0 1 2。</div>
+<h4 class="page-body-header" id="文件的创建打开和关闭">文件的创建、打开和关闭</h4>
+<div class="page-body-copy">要对一个文件进行操作，首先要求这个文件<strong>存在</strong>，其次是要在操作之前将这个文件<strong>打开</strong>，这样才能实现对该文件的操作，当完成操作后，则必须将文件关闭，文件的创建、打开与关闭是文件 I/O 操作的第一步。</div>
+<h5 class="page-body-header" id="open-函数">open 函数</h5>
+<div class="page-body-copy">调用<code>open</code>函数可以打开或创建一个文件。</div>
+<div class="page-body-copy">函数原型：<code>int open(const char* pathname,int flags);</code></div>
+<div class="page-body-copy">增加一个参数：<code>int open(const char* pathname,int flags,mode_t mode);</code></div>
+<div class="page-body-copy">返回值：若成功则返回文件描述符，若出错则返回-1。其中参数<code>pathname</code>是一个字符串指针，指向需要打开(或创建)文件的<strong>绝对路径名</strong>或<strong>相对路径名</strong>。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101157474.Dz5CQjHy_18QjhI.webp" alt="image-20220320101157474" width="695" height="196" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102217610.oylXHQQE_Z2PCBQ.webp" alt="image-20220320102217610" width="1673" height="36" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>mode</code>取值：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102222415.DyDEI1-f_ZYK0SS.webp" alt="image-20220320102222415" width="838" height="462" loading="lazy" decoding="async"></div>
+<h6 class="page-body-header" id="案例程序">案例程序</h6>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102302686.S_y3JPzZ_1CxS2X.webp" alt="image-20220320102302686" width="829" height="487" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">将<code>FLAGS</code>定义为：只写，不存在则创建，文件长度截短为 0。</div>
+<div class="page-body-copy">定义<code>mode</code>:创建文件的权限为用户读写执行，组读、执行，其他用户读、执行。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102333633.B5LeGTWC_Z1x4ljM.webp" alt="image-20220320102333633" width="449" height="126" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">运行程序后创建一个新文件：<code>test.txt</code>。</div>
+<div class="page-body-copy">查看其权限属性，可见恰好与创建时定义的 mode 吻合。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102355312.Bc_HIyTo_Z1krG9z.webp" alt="image-20220320102355312" width="506" height="16" loading="lazy" decoding="async"></div>
+<h5 class="page-body-header" id="creat-函数">creat 函数</h5>
+<div class="page-body-copy">用于创建文件。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101227035.B1VYawHD_ZwvLwm.webp" alt="image-20220320101227035" width="845" height="281" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">函数原型：<code>creat(const char *pathname,int flags);</code></div>
+<div class="page-body-copy">若成功则返回以只写方式打开的文件描述符，若出错为-1 参数 pathname 和 mode 的含义与 open 函数的含义相同。</div>
+<div class="page-body-copy"><code>creat</code>函数等效于<code>open(pathname,O_WRONLY|O_CREAT|O_TRUNC,mode);</code>其有一个不足之处是它以只写方式打开所创建的文件。</div>
+<div class="page-body-copy">在提供 open 的新版本之前，如果要创建一个临时文件，并要先写该文件，然后又读该文件，则必须先调用<code>create</code>、<code>close</code>，然后再调用<code>open</code>。</div>
+<h5 class="page-body-header" id="close-函数">close 函数</h5>
+<div class="page-body-copy">close 函数用于关闭一个文件。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101434997.DhQPOO5N_cglvA.webp" alt="image-20220320101434997" width="769" height="135" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">若成功则返回 0，若出错则返回-1。</div>
+<div class="page-body-copy">参数<code>fd</code>是需关闭文件的文件描述符 系统调用<code>close</code>不经将释放该文件的描述符，而且也将释放该文件所占的描述表项。</div>
+<div class="page-body-copy">关闭一个文件时也释放该进程加载该文件上所有的记录锁。当一个进程终止时，它所有的打开文件都由内核自动关闭。</div>
+<div class="page-body-copy">文件的定位 每个已打开的文件都有一个与其相关联的<strong>当前文件位移量</strong>，它是一个非负整数，用以度量从文件开始处计算的字节数。</div>
+<div class="page-body-copy">通常，读、写操作都从当前文件位移量处开始，并且使位移量增加所读或写的字节数。</div>
+<div class="page-body-copy">系统默认设置位移量为 0。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101454081.CYMXpK5a_2fOBWk.webp" alt="image-20220320101454081" width="613" height="168" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可以调用<code>lseek</code>函数显式地定位一个打开文件 若成功则返回新的文件位移量，出错则返回-1。</div>
+<div class="page-body-copy">l 表示长整型 参数<code>fd</code>表示已打开文件的描述符，参数<code>offset</code>表示位移量大小，单位字节，对参数<code>offset</code>的解释于参数<code>whence</code>的取值有关。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101504852.Bpoe4vV5_2fdB4T.webp" alt="image-20220320101504852" width="1619" height="188" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可见当<code>whence</code>取<code>SEEK_CUR</code>和<code>SEEK_END</code>时，可以取负值。</div>
+<h6 class="page-body-header" id="测试程序">测试程序</h6>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102440403.cowudHXS_1xqRkL.webp" alt="image-20220320102440403" width="644" height="273" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">该程序可测试标准输入能否被设置成偏移量：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320102453240.mYVaqAgX_ZyGjv3.webp" alt="image-20220320102453240" width="493" height="76" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">默认标准输入是键盘 从程序的运行结果看出 对于标准输入一般不能设置位移量。</div>
+<div class="page-body-copy">但对系统中文件以及用户创建的一般文件是可以设置位移量的。</div>
+<div class="page-body-copy">通常情况下 文件的当前位移量应当是一个非负整数，但是某些设备也可能允许负的位移量。但对于普通文件，则其位移量必须是非负值。</div>
+<div class="page-body-copy"><code>lseek</code>仅将当前的文件位移量记录在内核内，并不能引起如何 I/O 操作，然后该位移量用于下一个读或写操作。</div>
+<div class="page-body-copy">文件位移量可以大于文件的当前长度，在这种情况下，对该文件的下一次操作将延长该文件，并在文件中构成一个空洞，这一点是允许的。</div>
+<h4 class="page-body-header" id="文件的读写">文件的读写</h4>
+<div class="page-body-copy">文件的读写操作的系统调用分别是<code>read</code>和<code>write</code>。</div>
+<h5 class="page-body-header" id="read-函数">read 函数</h5>
+<div class="page-body-copy">从打开文件中读取数据返回：读到的字节数，若已到文件尾返回 0，若出错为-1。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320095118775.D9a_K6gu_ZRgYWB.webp" alt="image-20220320095118775" width="1098" height="190" loading="lazy" decoding="async"></div>
+<ul>
+<li>其中参数<code>fd</code>表示要进行读操作的文件的描述符；</li>
+<li><code>buf</code>是一个指向缓冲区的指针，该缓冲区存放将要读取到中断的数据；</li>
+<li><code>count</code>表示本次操作将要读取的数据的字节数。</li>
+</ul>
+<div class="page-body-copy">读操作从文件的当前位移量处开始，在成功返回之前，该位移量增加实际读得的字节数</div>
+<div class="page-body-copy">有几种情况可使实际读到的字节数少于要求读的字节数：</div>
+<ol>
+<li>读普通文件时，在读到要求字节数之前已到达了文件尾端；</li>
+<li>从终端设备读时，通常一次最多读一行；</li>
+<li>从网络中读；</li>
+<li>面向记录的设备。</li>
+</ol>
+<h5 class="page-body-header" id="write-函数">write 函数</h5>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320095155376.X1QwSIGM_1tIwtY.webp" alt="image-20220320095155376" width="767" height="138" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">打开文件写入数据，若成功则返回写的字节数，若出错为-1。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320095200261.CGjV_Kqb_Z1zuFil.webp" alt="image-20220320095200261" width="1779" height="245" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">对于普通文件 ，写操作从文件的当前位移量处开始，如果在打开该文件时，指定了 O_APPEND 选择项，则在每次写操作之前，将文件位移量设置在文件的当前结尾处。在一次成功操作写之后，该文件位移量增加实际写的字节数。</div>
+<h6 class="page-body-header" id="案例程序-1">案例程序</h6>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320103210374.Bnff6PLL_ZmYkxo.webp" alt="image-20220320103210374" width="767" height="632" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320103621058.DkWwIXoD_2mwDPu.webp" alt="image-20220320103621058" width="412" height="89" loading="lazy" decoding="async"></div>
+<h6 class="page-body-header" id="另外的程序">另外的程序</h6>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320105413049.CCvO7f5Y_Z193IdM.webp" alt="image-20220320105413049" width="602" height="846" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">该程序首先打开(或创建)文件<code>/home/hwx/test.txt</code>接着调用 write 函数将缓冲区 1 的数据写入文件，此时写入的数据长度为 10，然后调用 lseek 定位文件，文件偏移量为 50，并从文件开头计算偏移值，最后调用 write 将缓冲区 2 的数据也写入文件，写入的数据长度也为 10。</div>
+<div class="page-body-copy">在第二次写入数据时 之间 40 字节的内容为空 文件的总长度为 60 成功运行程序后 利用 ls 和 od 命令可以检验出：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320105426083.Hu25-Skj_vqNN6.webp" alt="image-20220320105426083" width="763" height="109" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">使用 od 命令观察该文件的实际内容。(命令行中的-c 标志表示以字符方式打印文件内容)</div>
+<div class="page-body-copy">中间 40 字节全为 0。</div>
+<h3 class="page-body-header" id="文件的属性操作">文件的属性操作</h3>
+<div class="page-body-copy">Linux 的文件系统具有比较复杂的属性，包括<strong>文件访问权限</strong>、<strong>文件所有者</strong>、<strong>文件名本身</strong>、<strong>文件长度</strong>等。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101732493.Ux6gLtK1_Z1z7QV6.webp" alt="image-20220320101732493" width="962" height="215" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">改变文件访问权限：<code>chmod</code>、<code>fchmod</code>这两个函数使用户可以更改现存文件的存取许可权</div>
+<div class="page-body-copy">两个函数的返回：若成功则为 0，出错则为-1。</div>
+<div class="page-body-copy"><code>chmod</code>函数在指定的文件上进行操作，pathname 指定了这个文件的绝对路径名或相对路径名，而<code>fchmod</code>函数则对已打开的文件进行操作，<code>fd</code>是这个打开文件的描述符。</div>
+<div class="page-body-copy">为了改变一个文件的访问许可权位 进位的有效用户 ID 必须等于文件的所有者(User)或者该进程必须具有 root 权限。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101745292.BzKaah-n_Z2efG8o.webp" alt="image-20220320101745292" width="641" height="402" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">当前<code>test.txt</code>文件权限:</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101820792.DJymo1Y5_1ooPys.webp" alt="image-20220320101820792" width="561" height="36" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101824816.CpVxAWOl_18u8fR.webp" alt="image-20220320101824816" width="520" height="97" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可见运行程序后文件权限被改变。</div>
+<h3 class="page-body-header" id="文件的其他操作">文件的其他操作</h3>
+<div class="page-body-copy">Linux 系统中所有文件都有一个与之对应的索引节点，该节点包含了文件的相关信息。</div>
+<div class="page-body-copy">这些信息被保存在 stat 结构体中，可以通过调用下面 3 个 stat 函数来返回文件的信息：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101844194.FMF9CLR0_ZnpQii.webp" alt="image-20220320101844194" width="669" height="223" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320101854044.JVpjoGFy_GdSMT.webp" alt="image-20220320101854044" width="1796" height="187" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><strong>stat</strong>函数、<strong>fstat</strong>函数和<strong>lstat</strong>函数。</div>
+<div class="page-body-copy">若成功则返回 0，出错则返回-1。</div>
+<ul>
+<li><strong>stat</strong>函数返回指定文件的信息结构，参数 pathname 指定了该文件的绝对路径名或相对路径名；</li>
+<li><strong>fstat</strong>函数获得已在描述符 fd 上打开的文件的有关信息；</li>
+<li><strong>lstat</strong>函数类似于 stat，但是当命名的文件是一个符号链接时，lstat 返回该符号链接的有关信息，而非由该符号链接引用的文件的信息 0。</li>
+</ul>
+<h2 class="page-body-header" id="基于流的-io">基于流的 I/O</h2>
+<h3 class="page-body-header" id="流和-file-对象">流和 FILE 对象</h3>
+<div class="page-body-copy">对于标准 I/O 库，它们的操作则是围绕流进行的，当用标准 I/O 库打开或创建一个文件时，已使一个流与一个文件相结合。I/O 函数 fopen 返回一个指向 FILE 对象的指针。该对象通常是一个结构体，包含了 I/O 库为管理该流所需要的所有信息，包括实际用于 I/O 的文件描述符，指向流缓存的指针，缓存的长度，当前在缓存中的字符数，出错标志等。</div>
+<h3 class="page-body-header" id="大致过程">大致过程</h3>
+<div class="page-body-copy">对流进行操作的第一步是通过调用<code>fopen</code>函数将其打开，并返回一个 FILE 结构指针。当流成功打开以后就可以调用相应的库函数对其进行 I/O 操作。当完成操作后要执行清空缓冲区、保存数据等操作，然后将流关闭，这些工作可通过<code>fclose</code>函数来完成。</div>
+<div class="page-body-copy">当使用流 I/O 时，有 3 个流会自动地打开：标准输入、标准输出和标准错误，用文件描述符<code>STDIN_FILENO</code>、<code>STDOUT_FILENO</code>、<code>STDERR_FILENO</code>表示它们，这 3 个符号定义在头文件<code>unistd.h</code>。</div>
+<div class="page-body-copy">而在基于流地 I/O 操作中，通过预定义文件指针<code>stdin</code>、<code>stdout</code>和<code>stderr</code>来引用标准输入、标准输出和标准出错。</div>
+<h3 class="page-body-header" id="缓存">缓存</h3>
+<div class="page-body-copy">基于流地操作最终会调用<code>read</code>或者<code>write</code>函数进行 I/O 操作。为了提高程序的运行效率，尽可能减少使用 read 和 write 调用的数量，流对象通常会提供缓冲区,以减少调用系统 I/O 库函数的次数，缓存用 3 种类型：</div>
+<ol>
+<li>全缓存(<code>_IO_FULL_BUF</code>)：直到缓冲区被填满，才调用系统 IO 函数，直到读入的内容的字节数等于缓冲区大小或者文件已经到达结尾，才进行实际的 I/O 操作，将外村文件内容读入缓冲区，对于写操作来说，直到缓冲区被填满，才进行实际的 I/O 操作；</li>
+<li>行缓存(<code>_IO_LINE_BUF</code>)：直到遇到换行符<code>\n</code> 才调用系统 I/O 库函数，对于读操作来说，遇到换行符<code>\n</code>才进行 I/O 操作，将缓冲区内容写到外存中。由于缓冲区大小是有限的，所以当缓冲区被填满时，即使没有遇到换行符<code>\n</code>，也同样会进行实际的 I/O 操作；</li>
+<li>无缓存(<code>_IO_UNBUFFERED</code>)：没有缓冲区，数据会立即读入或者输出到外存文件和设备上。标准出错 stderr 是无缓冲的，这样保证错误提示和输出能够即使反馈给用户，供用户排除错误。</li>
+</ol>
+<h2 class="page-body-header" id="深入探究-io">深入探究 I/O</h2>
+<h3 class="page-body-header" id="原子操作和竞争条件">原子操作和竞争条件</h3>
+<div class="page-body-copy">所有系统调用都是以原子操作方式执行的，内核保证了某系统调用中的所有步骤会作为独立操作而一次性加以执行，其间不会为其他进程或线程所中断。</div>
+<div class="page-body-copy">原子性规避了竞争状态，竞争状态：操作共享资源的两个进程(或线程)，其结果取决于一个无法预期的顺序，即这些进程获得 CPU 使用权的先后相对顺序。</div>
+<h3 class="page-body-header" id="文件-io-的两种竞争状态">文件 I/O 的两种竞争状态</h3>
+<div class="page-body-copy">以独占方式创建一个文件, 当同时指定<code>O_EXCL</code>与<code>O_CREAT</code>作为<code>open</code>的标志位时，如果要打开的文件依然存在，则<code>open</code>将返回一个错误。</div>
+<div class="page-body-copy">这提供了一种机制，保证进程是打开文件的创建者。对文件是否存在的检查和创建文件属于同一原子操作。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220320100348242.CilkZckQ_2qSJp0.webp" alt="image-20220320100348242" width="705" height="69" loading="lazy" decoding="async"></div></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 3 月 19 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>

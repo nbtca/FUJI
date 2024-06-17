@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="Linux笔记 - 信号 - 拔电关机"><meta name="description" content="有关linux信号的一系列笔记。"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Linux/Linux%E7%AC%94%E8%AE%B0-%E4%BF%A1%E5%8F%B7/"><meta property="og:title" content="Linux笔记 - 信号 - 拔电关机"><meta property="og:description" content="有关linux信号的一系列笔记。"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Linux/Linux%E7%AC%94%E8%AE%B0-%E4%BF%A1%E5%8F%B7/"><meta property="twitter:title" content="Linux笔记 - 信号 - 拔电关机"><meta property="twitter:description" content="有关linux信号的一系列笔记。"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">技术 </span> <span class="category-eyebrow__date">2022 年 4 月 5 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">Linux笔记 - 信号</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">有关linux信号的一系列笔记。</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/技术" class="tag"> 技术 </a><a href="/tags/Linux" class="tag"> Linux </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h2 class="page-body-header" id="linux-信号"><strong>Linux 信号</strong></h2>
+<div class="page-body-copy">信号本质上是整数，用户模式下用来模拟硬件中断。</div>
+<ul>
+<li>什么是硬件中断？先理解为硬件引发的中断。</li>
+<li>什么是中断？简言之，就是让 CPU 停下当前干的事转而去处理新的情况。</li>
+<li>信号是谁产生的？可以由硬件、内核和进程产生。</li>
+</ul>
+<div class="page-body-copy">例如在终端上用<code>Ctrl+C</code>，可以结束掉当前终端进程，本质上是发送 SIGINT 信号。</div>
+<div class="page-body-copy">如下是一个实例程序，该程序循环打印数字。运行起来，看看<code>Ctrl+C</code>能不能中止它：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;signal.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdbool.h></span></span>
+
+<span class="token keyword">void</span> <span class="token function">hand</span><span class="token punctuation">(</span><span class="token keyword">int</span> val<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"val: %d\n"</span><span class="token punctuation">,</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Do you want to kill me? No way!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">signal</span><span class="token punctuation">(</span>SIGINT<span class="token punctuation">,</span>hand<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>true<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"n:%d\n"</span><span class="token punctuation">,</span>n<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">如下所示，现在使用 Ctrl+C 是没办法中断这个程序的：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-1.CsQJzAQP_ZkVtEa.webp" alt="signal-1" width="745" height="418" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这里可以用 man 命令查看一下 signal 函数的帮助文档：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-2.DENjDdEy_1cteGL.webp" alt="signal-2" width="1440" height="428" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">signal 关联上了一个信号处理函数，来处理信号。</div>
+<div class="page-body-copy">现在修改这个代码，添加一行打印当前进程号，然后打开两个终端，一个终端运行上面的程序，一个终端尝试<code>kill</code>命令来发送信号：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-3.CybJTmJK_Z2brgx0.webp" alt="signal-3" width="1013" height="275" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">kill 要指定参数：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-4.DYOHTFjC_CDl6F.webp" alt="signal-4" width="848" height="113" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这是可行的，结果如上。</div>
+<div class="page-body-copy"><strong>信号处理的过程</strong></div>
+<div class="page-body-copy">进程 A 在运行，内核、硬件或者其他进程发送信号给进程 A。进程 A 接收到信号后，直接做信号本身规定的对应处理或者做事先注册好的信号处理。如上面 signal 函数就是注册信号处理，hand 函数替换了本身默认的信号处理。当然信号是可以屏蔽的，不作任何处理。</div>
+<div class="page-body-copy">Linux 有哪些信号类型：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-5.BUz32Cnh_1J4gI9.webp" alt="signal-5" width="1052" height="345" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">Linux 信号有 64 个，分为不可靠信号(非实时，1-31，Unix 提供)和可靠信号(32-64，后来扩充的)。又有系统自带的标准信号和用户自定义的信号。</div>
+<div class="page-body-copy">介绍几个命令或函数：</div>
+<ul>
+<li>信号注册：<code>signal</code>、<code>sigaction;</code></li>
+<li>信号发送：<code>kill</code>命令、<code>kill</code>函数、<code>sigqueue;</code></li>
+<li>信号屏蔽：<code>sigprocmask</code>;</li>
+<li>信号集：<code>sigset_t</code>.</li>
+</ul>
+<div class="page-body-copy">下面写一个发送信号的程序：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;signal.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdlib.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> pid <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> sig <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pid:%d  sig:%d\n"</span><span class="token punctuation">,</span>pid<span class="token punctuation">,</span>sig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">kill</span><span class="token punctuation">(</span>pid<span class="token punctuation">,</span>sig<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-6.QdycQAoG_zsl3l.webp" alt="signal-6" width="840" height="93" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-7.cfYQqrEw_7hneH.webp" alt="signal-7" width="673" height="51" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">成功发送了信号。</div>
+<div class="page-body-copy"><code>sigaction</code>函数有所不同，功能更多：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-8.8oGPdrLr_Z10x74x.webp" alt="signal-8" width="1420" height="518" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这里用到了一个结构体：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-9.Bk_gFlvv_Z2aqkNe.webp" alt="signal-9" width="1047" height="192" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">结构体的第一个成员依然是原来的信号处理函数，第二个成员被称作高级信号处理函数，第三个成员用于信号屏蔽，剩下两个暂时还用不到。</div>
+<div class="page-body-copy">这个函数不仅可以发信号、做信号处理，还可以接收信号的同时接收数据</div>
+<div class="page-body-copy">下列代码使用了高级信号处理：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;signal.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdbool.h></span></span>
+
+<span class="token comment">// 基本信号处理函数</span>
+<span class="token keyword">void</span> <span class="token function">hand</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"基本信号处理函数\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 高级信号处理函数</span>
+<span class="token keyword">void</span> <span class="token function">handler</span><span class="token punctuation">(</span><span class="token keyword">int</span> n<span class="token punctuation">,</span><span class="token class-name">siginfo_t</span><span class="token operator">*</span> siginfo<span class="token punctuation">,</span><span class="token keyword">void</span><span class="token operator">*</span> arg<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"高级信号处理函数\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"n:%d msg:%d\n"</span><span class="token punctuation">,</span>n<span class="token punctuation">,</span>siginfo<span class="token operator">-></span>si_int<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> act <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> old_act <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    act<span class="token punctuation">.</span>sa_handler <span class="token operator">=</span> hand<span class="token punctuation">;</span>
+    act<span class="token punctuation">.</span>sa_sigaction <span class="token operator">=</span> handler<span class="token punctuation">;</span>
+    act<span class="token punctuation">.</span>sa_flags <span class="token operator">=</span> SA_SIGINFO<span class="token punctuation">;</span>
+
+    <span class="token comment">// 高级信号处理</span>
+    <span class="token function">sigaction</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token operator">&#x26;</span>act<span class="token punctuation">,</span><span class="token operator">&#x26;</span>old_act<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pid:%d\n"</span><span class="token punctuation">,</span><span class="token function">getpid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>true<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"n:%d\n"</span><span class="token punctuation">,</span>n<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">同时还要实现高级的信号发送，采用<code>sigqueue</code>：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-10.CPTadltz_ZiukmE.webp" alt="signal-10" width="1423" height="426" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这里有个重要的联合体，用来存储数据和信号一起发送：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-11.DktvWoTr_1XcpiL.webp" alt="signal-11" width="1381" height="203" loading="lazy" decoding="async"></div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;unistd.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;signal.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdlib.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> pid <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> sig <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"pid:%d  sig:%d\n"</span><span class="token punctuation">,</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">union</span> sigval u<span class="token punctuation">;</span>
+    u<span class="token punctuation">.</span>sival_int <span class="token operator">=</span> <span class="token number">12345678</span><span class="token punctuation">;</span>
+    <span class="token function">sigqueue</span><span class="token punctuation">(</span>pid<span class="token punctuation">,</span>sig<span class="token punctuation">,</span>u<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">运行结果如下：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-12.C5-F3fvd_ZMw68f.webp" alt="" width="816" height="48" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-13.CTfjM7sD_Z2mDiF3.webp" alt="signal-13" width="663" height="371" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可以看到程序接收到了信号和数据。</div>
+<div class="page-body-copy">也试试发送其他数据，联合体中还有一个指针类型的成员。</div>
+<h2 class="page-body-header" id="linux-信号续">Linux 信号(续)</h2>
+<blockquote>
+<p>参考网站: Github、《极客时间》</p>
+</blockquote>
+<div class="page-body-copy">现在从底层角度来观赏 Linux 信号机制。</div>
+<div class="page-body-copy">首先看信号的具体作用：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-14.CbXqvcjI_1En32Q.webp" alt="signal-14" width="1073" height="587" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/signal-15.C9jqpqEF_ZbNXqt.webp" alt="signal-15" width="1142" height="433" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">如上文所提，处理信号有 3 种方式：执行默认操作，捕获信号和忽略信号</div>
+<div class="page-body-copy">设置信号处理有两种方式: signal 和 sigaction</div>
+<div class="page-body-copy">signal 将一个动作和信号关联，sigaction 也是将一个动作和信号关联，但这个动作用一个结构体表示了，处理信号将更加细致</div>
+<div class="page-body-copy">siganal 不是系统调用，而是 glibc 封装的一个函数，实现如下：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span>  <span class="token directive keyword">define</span> <span class="token macro-name">signal</span> <span class="token expression">__sysv_signal</span></span>
+__sighandler_t
+<span class="token function">__sysv_signal</span> <span class="token punctuation">(</span><span class="token keyword">int</span> sig<span class="token punctuation">,</span> __sighandler_t handler<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> act<span class="token punctuation">,</span> oact<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+  act<span class="token punctuation">.</span>sa_handler <span class="token operator">=</span> handler<span class="token punctuation">;</span>
+  <span class="token function">__sigemptyset</span> <span class="token punctuation">(</span><span class="token operator">&#x26;</span>act<span class="token punctuation">.</span>sa_mask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  act<span class="token punctuation">.</span>sa_flags <span class="token operator">=</span> SA_ONESHOT <span class="token operator">|</span> SA_NOMASK <span class="token operator">|</span> SA_INTERRUPT<span class="token punctuation">;</span>
+  act<span class="token punctuation">.</span>sa_flags <span class="token operator">&#x26;=</span> <span class="token operator">~</span>SA_RESTART<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">__sigaction</span> <span class="token punctuation">(</span>sig<span class="token punctuation">,</span> <span class="token operator">&#x26;</span>act<span class="token punctuation">,</span> <span class="token operator">&#x26;</span>oact<span class="token punctuation">)</span> <span class="token operator">&#x3C;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> SIG_ERR<span class="token punctuation">;</span>
+  <span class="token keyword">return</span> oact<span class="token punctuation">.</span>sa_handler<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token function">weak_alias</span> <span class="token punctuation">(</span>__sysv_signal<span class="token punctuation">,</span> sysv_signal<span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">这里可以看到 sa_flags 设置了一个 SA_ONESHOT，这意味着信号处理函数只作用一次，用完一次后就返回默认行为</div>
+<div class="page-body-copy">同时设置了 SA_NOMASK，通过 __sigemptyset，将 sa_mask 设置为空。这样的设置表示在这个信号处理函数执行过程中，如果再有其他信号，哪怕相同的信号到来的时候，这个信号处理函数会被中断。如果一个信号处理函数真的被其他信号中断，问题也不大，因为当处理完了其他的信号处理函数后，还会回来接着处理这个信号处理函数的，但是对于相同的信号就有点尴尬了。一般的思路应该是，当某一个信号的信号处理函数运行的时候，暂时屏蔽这个信号，屏蔽并不意味着信号一定丢失，而是暂存，这样能够做到信号处理函数对于相同的信号，处理完一个再处理下一个，这样信号处理函数的逻辑要简单得多。</div>
+<div class="page-body-copy">还有一个设置就是设置了 SA_INTERRUPT，清除了 SA_RESTART。信号的到来时间是不可预期的，有可能程序正在调用某个漫长的系统调用的时候，突然到来一个信号，中断了这个系统调用，去执行信号处理函数。那么执行完后信号处理函数，系统调用怎么办？</div>
+<div class="page-body-copy">时候有两种处理方法，一种就是 SA_INTERRUPT，也即系统调用被中断了，就不再重试这个系统调用了，而是直接返回一个 -EINTR 常量，告诉调用方，这个系统调用被信号中断了，调用方可以根据自己的逻辑，重新调用或者直接返回，这会使得代码非常复杂，在所有系统调用的返回值判断里面，都要特殊判断一下这个值。</div>
+<div class="page-body-copy">另外一种处理方法是 SA_RESTART。这个时候系统调用会被自动重新启动，不需要调用方自己写代码。当然也可能存在问题，例如从终端读入一个字符，这个时候用户在终端输入一个’a’字符，在处理’a’字符的时候被信号中断了，等信号处理完毕，再次读入一个字符的时候，如果用户不再输入，就停在那里了，需要用户再次输入同一个字符。</div>
+<div class="page-body-copy">可知 signal 函数是受到限制的，因此，建议使用 sigaction 函数，根据自己的需要定制参数。</div>
+<div class="page-body-copy">下面是 glibc 中的实现：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token keyword">int</span>
+<span class="token function">__sigaction</span> <span class="token punctuation">(</span><span class="token keyword">int</span> sig<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> <span class="token operator">*</span>act<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> <span class="token operator">*</span>oact<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+  <span class="token keyword">return</span> <span class="token function">__libc_sigaction</span> <span class="token punctuation">(</span>sig<span class="token punctuation">,</span> act<span class="token punctuation">,</span> oact<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token keyword">int</span>
+<span class="token function">__libc_sigaction</span> <span class="token punctuation">(</span><span class="token keyword">int</span> sig<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> <span class="token operator">*</span>act<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">sigaction</span> <span class="token operator">*</span>oact<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">int</span> result<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">kernel_sigaction</span> kact<span class="token punctuation">,</span> koact<span class="token punctuation">;</span>
+
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>act<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+      kact<span class="token punctuation">.</span>k_sa_handler <span class="token operator">=</span> act<span class="token operator">-></span>sa_handler<span class="token punctuation">;</span>
+      <span class="token function">memcpy</span> <span class="token punctuation">(</span><span class="token operator">&#x26;</span>kact<span class="token punctuation">.</span>sa_mask<span class="token punctuation">,</span> <span class="token operator">&#x26;</span>act<span class="token operator">-></span>sa_mask<span class="token punctuation">,</span> <span class="token keyword">sizeof</span> <span class="token punctuation">(</span><span class="token class-name">sigset_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      kact<span class="token punctuation">.</span>sa_flags <span class="token operator">=</span> act<span class="token operator">-></span>sa_flags <span class="token operator">|</span> SA_RESTORER<span class="token punctuation">;</span>
+
+
+      kact<span class="token punctuation">.</span>sa_restorer <span class="token operator">=</span> <span class="token operator">&#x26;</span>restore_rt<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+  result <span class="token operator">=</span> <span class="token function">INLINE_SYSCALL</span> <span class="token punctuation">(</span>rt_sigaction<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span>
+                           sig<span class="token punctuation">,</span> act <span class="token operator">?</span> <span class="token operator">&#x26;</span>kact <span class="token operator">:</span> <span class="token constant">NULL</span><span class="token punctuation">,</span>
+                           oact <span class="token operator">?</span> <span class="token operator">&#x26;</span>koact <span class="token operator">:</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> _NSIG <span class="token operator">/</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>oact <span class="token operator">&#x26;&#x26;</span> result <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+      oact<span class="token operator">-></span>sa_handler <span class="token operator">=</span> koact<span class="token punctuation">.</span>k_sa_handler<span class="token punctuation">;</span>
+      <span class="token function">memcpy</span> <span class="token punctuation">(</span><span class="token operator">&#x26;</span>oact<span class="token operator">-></span>sa_mask<span class="token punctuation">,</span> <span class="token operator">&#x26;</span>koact<span class="token punctuation">.</span>sa_mask<span class="token punctuation">,</span> <span class="token keyword">sizeof</span> <span class="token punctuation">(</span><span class="token class-name">sigset_t</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      oact<span class="token operator">-></span>sa_flags <span class="token operator">=</span> koact<span class="token punctuation">.</span>sa_flags<span class="token punctuation">;</span>
+      oact<span class="token operator">-></span>sa_restorer <span class="token operator">=</span> koact<span class="token punctuation">.</span>sa_restorer<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">内核代码注释表明，系统调用 signal 是为了兼容过去，系统调用 sigaction 也是为了兼容过去，连参数都变成了 struct compat_old_sigaction，所以说，我们的库函数虽然调用的是 sigaction，到了系统调用层，调用的可不是系统调用 sigaction，而是系统调用 rt_sigaction。</div>
+<div class="page-body-copy">在 <code>rt_sigaction</code> 里面，将用户态的 struct sigaction 结构，拷贝为内核态的 <code>k_sigaction</code>，然后调用 <code>do_sigaction</code>。</div>
+<div class="page-body-copy"><code>do_sigaction</code> 也很简单，进程内核的数据结构里，struct task_struct 里面有一个成员 sighand，里面有一个 action。</div>
+<div class="page-body-copy">这是一个数组，下标是信号，内容就是信号处理函数，<code>do_sigaction</code> 就是设置 sighand 里的信号处理函数。</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token keyword">int</span> <span class="token function">do_sigaction</span><span class="token punctuation">(</span><span class="token keyword">int</span> sig<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">k_sigaction</span> <span class="token operator">*</span>act<span class="token punctuation">,</span> <span class="token keyword">struct</span> <span class="token class-name">k_sigaction</span> <span class="token operator">*</span>oact<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">struct</span> <span class="token class-name">task_struct</span> <span class="token operator">*</span>p <span class="token operator">=</span> current<span class="token punctuation">,</span> <span class="token operator">*</span>t<span class="token punctuation">;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">k_sigaction</span> <span class="token operator">*</span>k<span class="token punctuation">;</span>
+  <span class="token class-name">sigset_t</span> mask<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+  k <span class="token operator">=</span> <span class="token operator">&#x26;</span>p<span class="token operator">-></span>sighand<span class="token operator">-></span>action<span class="token punctuation">[</span>sig<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+
+  <span class="token function">spin_lock_irq</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>p<span class="token operator">-></span>sighand<span class="token operator">-></span>siglock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>oact<span class="token punctuation">)</span>
+    <span class="token operator">*</span>oact <span class="token operator">=</span> <span class="token operator">*</span>k<span class="token punctuation">;</span>
+
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>act<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">sigdelsetmask</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>act<span class="token operator">-></span>sa<span class="token punctuation">.</span>sa_mask<span class="token punctuation">,</span>
+            <span class="token function">sigmask</span><span class="token punctuation">(</span>SIGKILL<span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token function">sigmask</span><span class="token punctuation">(</span>SIGSTOP<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token operator">*</span>k <span class="token operator">=</span> <span class="token operator">*</span>act<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+  <span class="token punctuation">}</span>
+
+
+  <span class="token function">spin_unlock_irq</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>p<span class="token operator">-></span>sighand<span class="token operator">-></span>siglock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">总结：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/7cb86c73b9e73893e6b0e0433d476928.C0U8IEYj_Z1DmlPf.webp" alt="" width="2665" height="2053" loading="lazy" decoding="async"></div></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 4 月 5 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>

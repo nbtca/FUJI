@@ -1,0 +1,426 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="Python爬虫实战-获取王者荣耀英雄大全 - 拔电关机"><meta name="description" content="使用python爬虫的实践记录,王者荣耀篇。"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Python/Python%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98-%E8%8E%B7%E5%8F%96%E7%8E%8B%E8%80%85%E8%8D%A3%E8%80%80%E8%8B%B1%E9%9B%84%E5%A4%A7%E5%85%A8/"><meta property="og:title" content="Python爬虫实战-获取王者荣耀英雄大全 - 拔电关机"><meta property="og:description" content="使用python爬虫的实践记录,王者荣耀篇。"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Python/Python%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98-%E8%8E%B7%E5%8F%96%E7%8E%8B%E8%80%85%E8%8D%A3%E8%80%80%E8%8B%B1%E9%9B%84%E5%A4%A7%E5%85%A8/"><meta property="twitter:title" content="Python爬虫实战-获取王者荣耀英雄大全 - 拔电关机"><meta property="twitter:description" content="使用python爬虫的实践记录,王者荣耀篇。"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">技术 </span> <span class="category-eyebrow__date">2022 年 4 月 17 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">Python爬虫实战-获取王者荣耀英雄大全</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">使用python爬虫的实践记录,王者荣耀篇。</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/技术" class="tag"> 技术 </a><a href="/tags/Python" class="tag"> Python </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h2 class="page-body-header" id="python-爬虫实战-获取王者荣耀英雄大全">Python 爬虫实战-获取王者荣耀英雄大全</h2>
+<div class="page-body-copy">URL: <a href="https://pvp.qq.com/web201605/herolist.shtml">https://pvp.qq.com/web201605/herolist.shtml</a></div>
+<h4 class="page-body-header" id="前置准备">前置准备</h4>
+<div class="page-body-copy">访问后页面如下所示:：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-1.BeqlrWoz_Z17WD21.webp" alt="python-wzry-1" width="1462" height="826" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">不难发现，这是静态网页，对于众多英雄的信息，并未使用 js 渲染，这貌似是个软柿子？</div>
+<div class="page-body-copy">按下 F12 使用开发者工具，点击 Doc，查看请求的 Reponse，可以看到众多英雄的信息在这个静态文档列举了出来，于是似乎只要按照 html 标签就可以轻松获取信息(<em><u>后面会解释，这实际上是个坑，先暂且按照这个思路进行</u></em>)。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-2.Dav7i-RU_ZgGB44.webp" alt="python-wzry-2" width="1233" height="649" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">拼接 li 标签下对应的链接(<a href="https://pvp.qq.com/web201605/">https://pvp.qq.com/web201605/</a> + herodetail/***.html)，就可以访问到指定英雄对应的链接，如下所示：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-3.oZsIAFQ9_2jx7Gt.webp" alt="python-wzry-3" width="772" height="131" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">拼接的 URL 和访问的页面如下所示：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-4.uOT4dRWy_Z1P2AXD.webp" alt="python-wzry-4" width="740" height="137" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-5.B-M5srsQ_lY6jA.webp" alt="python-wzry-5" width="1918" height="866" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">然后就可以愉快的获取信息了！</div>
+<h4 class="page-body-header" id="初步挖掘">初步挖掘</h4>
+<div class="page-body-copy">只须使用如下第三方库：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+<span class="token keyword">import</span> re
+</code></pre>
+<div class="page-body-copy">之后编写代码的流程也很清晰明了，先通过主页面获取所以英雄的名称及其对应的链接，因为该网页使用了 GBK 编码，所以要进行转码。</div>
+<div class="page-body-copy">代码如下：</div>
+<pre class="language-python"><code is:raw="" class="language-python">herolist <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+hero_dictionary <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+root_url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/"</span>
+herolist_url <span class="token operator">=</span> root_url <span class="token operator">+</span> <span class="token string">"herolist.shtml"</span>
+headers <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'user-agent'</span><span class="token punctuation">:</span> <span class="token string">'Mozilla/5.0 (X11; Linux x86_64)'</span><span class="token punctuation">}</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_herolist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>herolist_url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span>
+    soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"gbk"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"html.parser"</span><span class="token punctuation">)</span> <span class="token comment"># GBK编码</span>
+    targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"herolist clearfix"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> target<span class="token punctuation">.</span>text
+        link <span class="token operator">=</span> root_url <span class="token operator">+</span> target<span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> link<span class="token punctuation">)</span>
+        herolist<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> link<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+get_herolist<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">运行结果如下：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-6.DFQjHWXm_Z23iPTt.webp" alt="python-wzry-6" width="901" height="292" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">下面访问单个英雄的链接，理清 HTML 结构后就可以获取数据。</div>
+<div class="page-body-copy">英雄的称号在 h3 标签中：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-7.B0qPI_g9_Z1I8sec.webp" alt="python-wzry-7" width="1066" height="606" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">英雄的属性在 class=“cover-list”的标签中，每个属性的信息在 li 标签中，每个属性的值其实就是横条的长度。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-8.-GdRGBw6_ZMkWU8.webp" alt="python-wzry-8" width="812" height="328" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这个值可以在 li 标签下的 i 标签中找到，只要取出 style 的值即可，这是一个百分数字符串，取这个字符串中”:“和”%“之间的字符串，得到一个数字，这个数字就可以代表属性值的大小。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-9.D3zZ29ls_Zh2pdq.webp" alt="python-wzry-9" width="814" height="330" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">英雄的职业虽然没有以文本的形式显示出来，但如下<code>i</code>标签中的 class 值明显是和职业有关的：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-10.BzUZkjR8_6BmIj.webp" alt="python-wzry-10" width="812" height="332" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">只要看看其他的英雄的页面，就可以得到如下对应关系：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-11.D9ZwclQF_Z2nPYBl.webp" alt="python-wzry-11" width="376" height="125" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">于是这部分代码就可以这样写：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">get_heroinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    professions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'herodetail-sort-1'</span><span class="token punctuation">:</span> <span class="token string">'战士'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-2'</span><span class="token punctuation">:</span> <span class="token string">'法师'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-3'</span><span class="token punctuation">:</span> <span class="token string">'坦克'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-4'</span><span class="token punctuation">:</span> <span class="token string">'刺客'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-5'</span><span class="token punctuation">:</span> <span class="token string">'射手'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-6'</span><span class="token punctuation">:</span> <span class="token string">'辅助'</span>
+                   <span class="token punctuation">}</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> herolist<span class="token punctuation">:</span>
+        name<span class="token punctuation">,</span>hero_url <span class="token operator">=</span> item
+        res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>hero_url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span>
+        soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"gbk"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+        title <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"h3"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>text  <span class="token comment"># 英雄称号</span>
+        profession <span class="token operator">=</span> professions<span class="token punctuation">[</span>soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"herodetail-sort"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">"class"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span>  <span class="token comment"># 英雄职业</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"cover-list"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"li"</span><span class="token punctuation">)</span>
+        values <span class="token operator">=</span> <span class="token punctuation">[</span>re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r":([0-9]+%)"</span><span class="token punctuation">,</span> target<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'style'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">]</span>  <span class="token comment"># 英雄能力值</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>title<span class="token punctuation">,</span> name<span class="token punctuation">,</span> profession<span class="token punctuation">,</span> values<span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">运行结果：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-12.DbyBYOtp_Z1FpHwt.webp" alt="python-wzry-12" width="766" height="211" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">现在来解释这部分代码：</div>
+<div class="page-body-copy">首先定义了一个字典来存放英雄职业对应关系，然后遍历上一段代码获取到的列表，取出每个元素中的链接，进行访问。</div>
+<div class="page-body-copy">对每个链接再做一次请求，获取 HTML 文档后，借助标签进行数据提取，只要按照上文中说明的流程即可。我这里选择将属性值封装进一个列表。</div>
+<div class="page-body-copy">我还想获得英雄关系，能便于我在选英雄时具有针对性…</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-13.lW7pDCw9_ZWCQpF.webp" alt="python-wzry-13" width="799" height="251" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">观察 HTML 代码，可以看到 3 大关系都放在如下 3 个标签中：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-14.CsoTPhiL_Z1aA6PO.webp" alt="python-wzry-14" width="1575" height="261" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">一个关系中有两个英雄，分别放在 li 标签下，而 a 标签下存放的路径，就指向了这个英雄：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-15.CbUH7Uve_Z1bfLpT.webp" alt="python-wzry-15" width="584" height="172" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">那么依据这个链接，就可以得到这个英雄：</div>
+<div class="page-body-copy">这里我选择在最开始获取英雄链接的函数里，加上一个建立字典的操作，这个字典的键就是路径(被分割过)，值是英雄名：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-16.BpM4rjQq_weXFL.webp" alt="python-wzry-16" width="728" height="228" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">建立字典的目的是便于索引，可以直接通过路径拿到英雄名称：</div>
+<pre class="language-python"><code is:raw="" class="language-python">        relations <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token comment"># 获取英雄关系</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"hero-list hero-relate-list fl"</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+            temp <span class="token operator">=</span> target<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+            hero_one <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            hero_two <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            relations<span class="token punctuation">.</span>append<span class="token punctuation">(</span>hero_one<span class="token operator">+</span><span class="token string">"/"</span><span class="token operator">+</span>hero_two<span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">用一个列表来存放这三个关系。</div>
+<div class="page-body-copy">于是整个代码变成了这个样子：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+
+
+herolist <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+hero_dictionary <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+root_url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/"</span>
+herolist_url <span class="token operator">=</span> root_url <span class="token operator">+</span> <span class="token string">"herolist.shtml"</span>
+headers <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'user-agent'</span><span class="token punctuation">:</span> <span class="token string">'Mozilla/5.0 (X11; Linux x86_64)'</span><span class="token punctuation">}</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_herolist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>herolist_url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">,</span><span class="token punctuation">)</span>
+    soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"gbk"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+    targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"herolist clearfix"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> target<span class="token punctuation">.</span>text
+        hero_dictionary<span class="token punctuation">[</span>target<span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> name  <span class="token comment"># 建立字典</span>
+        link <span class="token operator">=</span> root_url <span class="token operator">+</span> target<span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> link<span class="token punctuation">)</span>
+        herolist<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> link<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_heroinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    professions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'herodetail-sort-1'</span><span class="token punctuation">:</span> <span class="token string">'战士'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-2'</span><span class="token punctuation">:</span> <span class="token string">'法师'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-3'</span><span class="token punctuation">:</span> <span class="token string">'坦克'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-4'</span><span class="token punctuation">:</span> <span class="token string">'刺客'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-5'</span><span class="token punctuation">:</span> <span class="token string">'射手'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-6'</span><span class="token punctuation">:</span> <span class="token string">'辅助'</span>
+                   <span class="token punctuation">}</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> herolist<span class="token punctuation">:</span>
+        name<span class="token punctuation">,</span>hero_url <span class="token operator">=</span> item
+        res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>hero_url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span>
+        soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"gbk"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+        title <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"h3"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>text  <span class="token comment"># 英雄称号</span>
+        profession <span class="token operator">=</span> professions<span class="token punctuation">[</span>soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"herodetail-sort"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">"class"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span>  <span class="token comment"># 英雄职业</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"cover-list"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"li"</span><span class="token punctuation">)</span>
+        values <span class="token operator">=</span> <span class="token punctuation">[</span>re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r":([0-9]+%)"</span><span class="token punctuation">,</span> target<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'style'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">]</span>  <span class="token comment"># 英雄能力值</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+        relations <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token comment"># 关系列表</span>
+        <span class="token comment"># 获取英雄关系</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"hero-list hero-relate-list fl"</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+            temp <span class="token operator">=</span> target<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+            hero_one <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            hero_two <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            relations<span class="token punctuation">.</span>append<span class="token punctuation">(</span>hero_one<span class="token operator">+</span><span class="token string">"/"</span><span class="token operator">+</span>hero_two<span class="token punctuation">)</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span>title<span class="token punctuation">,</span> name<span class="token punctuation">,</span> profession<span class="token punctuation">,</span> values<span class="token punctuation">,</span> relations<span class="token punctuation">)</span>
+
+
+get_herolist<span class="token punctuation">(</span><span class="token punctuation">)</span>
+get_heroinfo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">运行起来可以发现，刚开始很正常，顺利获取了数据：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-17.CG7NmBQC_Z1MKcbW.webp" alt="python-wzry-17" width="905" height="208" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">但到后面就报错了，显示<code>KeyError</code>：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-18.Tj6eytXz_ZfPeXr.webp" alt="python-wzry-18" width="884" height="197" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这是因为字典中没有这个键，这说明了什么？</div>
+<div class="page-body-copy">说明了最开始爬到的诸多英雄，是有缺失的。访问一下这个 528.shtml 对应的页面：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-19.BcyjSrGv_Zhs5A8.webp" alt="python-wzry-19" width="1916" height="869" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">再后头检查一下爬到的英雄，发现真的没有澜…</div>
+<div class="page-body-copy">感觉有点无语，但毕竟已经是个到这一步了，容我冷静地想一想为什么…</div>
+<div class="page-body-copy"><img  src="/Home/_astro/006ARE9vgy1fwemc30vd5j303y052q2r.gg7Viv0G_ZslPfx.webp" alt="while(true)反复分析(程序员)_While_true_程序员_反复_分析表情" width="142" height="182" loading="lazy" decoding="async"></div>
+<h4 class="page-body-header" id="反思问题">反思问题</h4>
+<div class="page-body-copy">不难发现，这个链接返回的数据，原本就是缺的：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-21.Cw2IbZUt_Z17dwvd.webp" alt="python-wzry-21" width="1106" height="668" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">前面的这部分数据，明显找不到。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-22.BkkTH4Qn_1rq8Yc.webp" alt="python-wzry-22" width="1067" height="434" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">再看看这让人匪夷所思的 URL，搞不好数据还是停留在 2016 年的…</div>
+<div class="page-body-copy">再看看请求头，发现 status code 是 304 并非 200，可见发生了网页重定向：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-23.DqX3kiUG_1bjtLU.webp" alt="python-wzry-23" width="622" height="338" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">就不详细解释 304 的意思了，直接百度 <a href="https://wenku.baidu.com/view/97ccaaa6d7d8d15abe23482fb4daa58da0111ca5.html">分析 HTTP 请求返回 304 状态码 - 百度文库</a>。</div>
+<div class="page-body-copy">遇到这种问题并非没有解决方法，但我就不继续挖坑了，因为我更乐意另辟蹊径。</div>
+<div class="page-body-copy">在 XHR 中发现了一条请求，返回的是 json 数据。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-24.DmoBdkj2_Z7nUTT.webp" alt="python-wzry-24" width="1059" height="457" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">不妨看看这是个甚么数据：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+
+hero_dict <span class="token operator">=</span> <span class="token builtin">dict</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+hero_list <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/js/herolist.json"</span>
+headers <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'user-agent'</span><span class="token punctuation">:</span> <span class="token string">'Mozilla/5.0 (X11; Linux x86_64)'</span><span class="token punctuation">}</span>
+results <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span>headers<span class="token operator">=</span>headers<span class="token punctuation">)</span><span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> result <span class="token keyword">in</span> results<span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">看到这个数据，检验了一下，发现是齐全的，不禁觉得惊喜又感动，但又有那么一丝惆怅。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-25.BxPSc3LO_pH17M.webp" alt="python-wzry-25" width="1282" height="501" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">之前以为静态网页就是软柿子了，但现在这个 json 数据似乎更加简明。所以说，我们不能局限在经验里。</div>
+<h4 class="page-body-header" id="改善代码">改善代码</h4>
+<div class="page-body-copy">现在只要将第一个获取英雄列表的函数替换：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">get_herolist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/js/herolist.json"</span>
+    results <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span><span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> result <span class="token keyword">in</span> results<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> result<span class="token punctuation">[</span><span class="token string">"cname"</span><span class="token punctuation">]</span> <span class="token comment"># 英雄名称</span>
+        link <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/herodetail/{}.shtml"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token string">"ename"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        herolist<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span>link<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        hero_dictionary<span class="token punctuation">[</span><span class="token string">"{}.shtml"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token string">"ename"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> name
+</code></pre>
+<div class="page-body-copy">在稍微修改一下后面的代码，目前得到的代码是这样的：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+<span class="token keyword">import</span> re
+
+herolist <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+hero_dictionary <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+result_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+root_url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/"</span>
+herolist_url <span class="token operator">=</span> root_url <span class="token operator">+</span> <span class="token string">"herolist.shtml"</span>
+headers <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'user-agent'</span><span class="token punctuation">:</span> <span class="token string">'Mozilla/5.0 (X11; Linux x86_64)'</span><span class="token punctuation">}</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_herolist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/js/herolist.json"</span>
+    results <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span><span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> result <span class="token keyword">in</span> results<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> result<span class="token punctuation">[</span><span class="token string">"cname"</span><span class="token punctuation">]</span> <span class="token comment"># 英雄名称</span>
+        link <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/herodetail/{}.shtml"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token string">"ename"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        herolist<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span>link<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        hero_dictionary<span class="token punctuation">[</span><span class="token string">"{}.shtml"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token string">"ename"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> name
+
+
+<span class="token keyword">def</span> <span class="token function">get_heroinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    professions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'herodetail-sort-1'</span><span class="token punctuation">:</span> <span class="token string">'战士'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-2'</span><span class="token punctuation">:</span> <span class="token string">'法师'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-3'</span><span class="token punctuation">:</span> <span class="token string">'坦克'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-4'</span><span class="token punctuation">:</span> <span class="token string">'刺客'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-5'</span><span class="token punctuation">:</span> <span class="token string">'射手'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-6'</span><span class="token punctuation">:</span> <span class="token string">'辅助'</span>
+                   <span class="token punctuation">}</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> herolist<span class="token punctuation">:</span>
+        name<span class="token punctuation">,</span>hero_url <span class="token operator">=</span> item
+        res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>hero_url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span>
+        soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"gbk"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+        title <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"h3"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>text  <span class="token comment"># 英雄称号</span>
+        profession <span class="token operator">=</span> professions<span class="token punctuation">[</span>soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"herodetail-sort"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">"class"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span>  <span class="token comment"># 英雄职业</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"cover-list"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"li"</span><span class="token punctuation">)</span>
+        values <span class="token operator">=</span> <span class="token punctuation">[</span>re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r":([0-9]+%)"</span><span class="token punctuation">,</span> target<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'style'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">]</span>  <span class="token comment"># 英雄能力值</span>
+        relations <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token comment"># 获取英雄关系</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"hero-list hero-relate-list fl"</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+            temp <span class="token operator">=</span> target<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+            hero_one <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            hero_two <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            relations<span class="token punctuation">.</span>append<span class="token punctuation">(</span>hero_one<span class="token operator">+</span><span class="token string">"/"</span><span class="token operator">+</span>hero_two<span class="token punctuation">)</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span>title<span class="token punctuation">,</span> name<span class="token punctuation">,</span> profession<span class="token punctuation">,</span> values<span class="token punctuation">,</span> relations<span class="token punctuation">,</span> hero_url<span class="token punctuation">)</span>
+
+
+get_herolist<span class="token punctuation">(</span><span class="token punctuation">)</span>
+get_heroinfo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">运行结果如下：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-26.CPf161Ie_kqYDf.webp" alt="python-wzry-26" width="1176" height="228" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">事实上数据还可以进一步扩充，这就看自己的意愿了。</div>
+<h4 class="page-body-header" id="数据存储">数据存储</h4>
+<div class="page-body-copy">下面实现将数据保存到 excel。</div>
+<div class="page-body-copy">一个 Excel 文档也称为一个工作簿（workbook），每个工作簿里可以有多个工作表（worksheet），当前打开的工作表又叫活动表。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/crawler-l6-8-2019111.CJBKVcC9_Teuiq.webp" alt="" width="1760" height="1276" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">每个工作表里有行和列，特定的行与列相交的方格称为单元格（cell）。比如上图第 A 列和第 1 行相交的方格可以直接表示为 A1 单元格。</div>
+<div class="page-body-copy">通过 openpyxl.Workbook()函数就可以创建新的工作簿。</div>
+<div class="page-body-copy">创建完新的工作簿后，还得获取工作表。不然程序会无所适从，不知道要把内容写入哪张工作表里。</div>
+<div class="page-body-copy">添加完工作表，就能来操作单元格，往单元格里写入内容。</div>
+<div class="page-body-copy">使用 append 函数，就可以添加一行。</div>
+<div class="page-body-copy">代码如下：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">save_excel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    wb <span class="token operator">=</span> openpyxl<span class="token punctuation">.</span>Workbook<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    sheet <span class="token operator">=</span> wb<span class="token punctuation">.</span>active
+    sheet<span class="token punctuation">.</span>title <span class="token operator">=</span> <span class="token string">"sheet1"</span>
+    <span class="token comment"># 表头</span>
+    head <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"英雄称号"</span><span class="token punctuation">,</span> <span class="token string">"英雄名称"</span><span class="token punctuation">,</span> <span class="token string">"英雄职业"</span><span class="token punctuation">,</span> <span class="token string">"生存能力"</span><span class="token punctuation">,</span> <span class="token string">"攻击伤害"</span><span class="token punctuation">,</span> <span class="token string">"技能效果"</span><span class="token punctuation">,</span> <span class="token string">"上手难度"</span><span class="token punctuation">,</span> <span class="token string">"最佳搭档"</span><span class="token punctuation">,</span> <span class="token string">"压制英雄"</span><span class="token punctuation">,</span> <span class="token string">"被压制英雄"</span><span class="token punctuation">,</span> <span class="token string">"链接"</span><span class="token punctuation">]</span>
+    sheet<span class="token punctuation">.</span>append<span class="token punctuation">(</span>head<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> result_list<span class="token punctuation">:</span>
+        <span class="token comment"># 将数据整合为一维列表便于添加</span>
+        row <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> value <span class="token keyword">in</span> item<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+            row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+        <span class="token keyword">for</span> group <span class="token keyword">in</span> item<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+            row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>group<span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        sheet<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">)</span> <span class="token comment"># 整行添加</span>
+
+    wb<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string">'result.xlsx'</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">如下就是最后的结果了</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-28.diU3OQw8_Z5QRqa.webp" alt="python-wzry-28" width="1611" height="818" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">接着又试着获取了所有装备的信息，就不详细描述了。</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">def</span> <span class="token function">get_equiplist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    type_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"攻击"</span><span class="token punctuation">,</span> <span class="token string">"法术"</span><span class="token punctuation">,</span> <span class="token string">"防御"</span><span class="token punctuation">,</span> <span class="token string">"移动"</span><span class="token punctuation">,</span> <span class="token string">"打野"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"游走"</span><span class="token punctuation">]</span>
+    url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/js/item.json"</span>
+    items <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span><span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> items<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"item_name"</span><span class="token punctuation">]</span>
+        item_type <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"item_type"</span><span class="token punctuation">]</span>
+        price <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"price"</span><span class="token punctuation">]</span>
+        total_price <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"total_price"</span><span class="token punctuation">]</span>
+        attribute <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"des1"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;/p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"&#x3C;br>"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            ability <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"des2"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;/p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"&#x3C;br>"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+        <span class="token keyword">except</span> KeyError<span class="token punctuation">:</span>
+            ability <span class="token operator">=</span> <span class="token string">""</span>
+        equip_list<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">[</span>name<span class="token punctuation">,</span> type_list<span class="token punctuation">[</span>item_type<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> price<span class="token punctuation">,</span> total_price<span class="token punctuation">,</span> attribute<span class="token punctuation">,</span> ability<span class="token punctuation">]</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy"><img  src="/Home/_astro/python-wzry-29.BOP9cg5-_ZK8128.webp" alt="python-wzry-29" width="1917" height="826" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">最后的完整代码：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+<span class="token keyword">import</span> openpyxl
+<span class="token keyword">import</span> re
+
+herolist <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+hero_dictionary <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+equip_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+result_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+root_url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/"</span>
+herolist_url <span class="token operator">=</span> root_url <span class="token operator">+</span> <span class="token string">"herolist.shtml"</span>
+headers <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'user-agent'</span><span class="token punctuation">:</span> <span class="token string">'Mozilla/5.0 (X11; Linux x86_64)'</span><span class="token punctuation">}</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_herolist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/js/herolist.json"</span>
+    results <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span><span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> result <span class="token keyword">in</span> results<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> result<span class="token punctuation">[</span><span class="token string">"cname"</span><span class="token punctuation">]</span> <span class="token comment"># 英雄名称</span>
+        link <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/herodetail/{}.shtml"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token string">"ename"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        herolist<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span>link<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        hero_dictionary<span class="token punctuation">[</span><span class="token string">"{}.shtml"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token string">"ename"</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token operator">=</span> name
+
+
+<span class="token keyword">def</span> <span class="token function">get_heroinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    professions <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'herodetail-sort-1'</span><span class="token punctuation">:</span> <span class="token string">'战士'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-2'</span><span class="token punctuation">:</span> <span class="token string">'法师'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-3'</span><span class="token punctuation">:</span> <span class="token string">'坦克'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-4'</span><span class="token punctuation">:</span> <span class="token string">'刺客'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-5'</span><span class="token punctuation">:</span> <span class="token string">'射手'</span><span class="token punctuation">,</span>
+                   <span class="token string">'herodetail-sort-6'</span><span class="token punctuation">:</span> <span class="token string">'辅助'</span>
+                   <span class="token punctuation">}</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> herolist<span class="token punctuation">:</span>
+        name<span class="token punctuation">,</span>hero_url <span class="token operator">=</span> item
+        res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>hero_url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span>
+        soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>content<span class="token punctuation">.</span>decode<span class="token punctuation">(</span><span class="token string">"gbk"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+        title <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"h3"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>text  <span class="token comment"># 英雄称号</span>
+        profession <span class="token operator">=</span> professions<span class="token punctuation">[</span>soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"herodetail-sort"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">"class"</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span>  <span class="token comment"># 英雄职业</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"cover-list"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"li"</span><span class="token punctuation">)</span>
+        values <span class="token operator">=</span> <span class="token punctuation">[</span>re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r":([0-9]+%)"</span><span class="token punctuation">,</span> target<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"i"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'style'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">]</span>  <span class="token comment"># 英雄能力值</span>
+        relations <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token comment"># 获取英雄关系</span>
+        targets <span class="token operator">=</span> soup<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span>class_<span class="token operator">=</span><span class="token string">"hero-list hero-relate-list fl"</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> target <span class="token keyword">in</span> targets<span class="token punctuation">:</span>
+            temp <span class="token operator">=</span> target<span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"a"</span><span class="token punctuation">)</span>
+            hero_one <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            hero_two <span class="token operator">=</span> hero_dictionary<span class="token punctuation">[</span>temp<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string">"href"</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+            relations<span class="token punctuation">.</span>append<span class="token punctuation">(</span>hero_one<span class="token operator">+</span><span class="token string">"/"</span><span class="token operator">+</span>hero_two<span class="token punctuation">)</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span>title<span class="token punctuation">,</span> name<span class="token punctuation">,</span> values<span class="token punctuation">,</span> hero_url<span class="token punctuation">)</span>
+        result_list<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span>title<span class="token punctuation">,</span> name<span class="token punctuation">,</span> profession<span class="token punctuation">,</span> values<span class="token punctuation">,</span> relations<span class="token punctuation">,</span> hero_url<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_equiplist</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    type_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"攻击"</span><span class="token punctuation">,</span> <span class="token string">"法术"</span><span class="token punctuation">,</span> <span class="token string">"防御"</span><span class="token punctuation">,</span> <span class="token string">"移动"</span><span class="token punctuation">,</span> <span class="token string">"打野"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> <span class="token string">"游走"</span><span class="token punctuation">]</span>
+    url <span class="token operator">=</span> <span class="token string">"https://pvp.qq.com/web201605/js/item.json"</span>
+    items <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">=</span>url<span class="token punctuation">,</span> headers<span class="token operator">=</span>headers<span class="token punctuation">)</span><span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> items<span class="token punctuation">:</span>
+        name <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"item_name"</span><span class="token punctuation">]</span>
+        item_type <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"item_type"</span><span class="token punctuation">]</span>
+        price <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"price"</span><span class="token punctuation">]</span>
+        total_price <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"total_price"</span><span class="token punctuation">]</span>
+        attribute <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"des1"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;/p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"&#x3C;br>"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            ability <span class="token operator">=</span> item<span class="token punctuation">[</span><span class="token string">"des2"</span><span class="token punctuation">]</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"&#x3C;/p>"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"&#x3C;br>"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+        <span class="token keyword">except</span> KeyError<span class="token punctuation">:</span>
+            ability <span class="token operator">=</span> <span class="token string">""</span>
+        equip_list<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">[</span>name<span class="token punctuation">,</span> type_list<span class="token punctuation">[</span>item_type<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> price<span class="token punctuation">,</span> total_price<span class="token punctuation">,</span> attribute<span class="token punctuation">,</span> ability<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">save_excel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    wb <span class="token operator">=</span> openpyxl<span class="token punctuation">.</span>Workbook<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    sheet <span class="token operator">=</span> wb<span class="token punctuation">.</span>active
+    sheet<span class="token punctuation">.</span>title <span class="token operator">=</span> <span class="token string">"英雄大全"</span>
+    head <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"英雄称号"</span><span class="token punctuation">,</span> <span class="token string">"英雄名称"</span><span class="token punctuation">,</span> <span class="token string">"英雄职业"</span><span class="token punctuation">,</span> <span class="token string">"生存能力"</span><span class="token punctuation">,</span> <span class="token string">"攻击伤害"</span><span class="token punctuation">,</span> <span class="token string">"技能效果"</span><span class="token punctuation">,</span> <span class="token string">"上手难度"</span><span class="token punctuation">,</span> <span class="token string">"最佳搭档"</span><span class="token punctuation">,</span> <span class="token string">"压制英雄"</span><span class="token punctuation">,</span> <span class="token string">"被压制英雄"</span><span class="token punctuation">,</span> <span class="token string">"链接"</span><span class="token punctuation">]</span>
+    sheet<span class="token punctuation">.</span>append<span class="token punctuation">(</span>head<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> result_list<span class="token punctuation">:</span>
+        row <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> value <span class="token keyword">in</span> item<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+            row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+        <span class="token keyword">for</span> group <span class="token keyword">in</span> item<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+            row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>group<span class="token punctuation">)</span>
+        row<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        sheet<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+
+    sheet <span class="token operator">=</span> wb<span class="token punctuation">.</span>create_sheet<span class="token punctuation">(</span><span class="token string">"装备大全"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    head <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">"装备名称"</span><span class="token punctuation">,</span> <span class="token string">"装备类型"</span><span class="token punctuation">,</span> <span class="token string">"售价"</span><span class="token punctuation">,</span> <span class="token string">"总价"</span><span class="token punctuation">,</span> <span class="token string">"属性"</span><span class="token punctuation">,</span> <span class="token string">"技能"</span><span class="token punctuation">]</span>
+    sheet<span class="token punctuation">.</span>append<span class="token punctuation">(</span>head<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> item <span class="token keyword">in</span> equip_list<span class="token punctuation">:</span>
+        sheet<span class="token punctuation">.</span>append<span class="token punctuation">(</span>item<span class="token punctuation">)</span>
+
+    wb<span class="token punctuation">.</span>save<span class="token punctuation">(</span><span class="token string">'result.xlsx'</span><span class="token punctuation">)</span>
+    wb<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    get_herolist<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    get_heroinfo<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    get_equiplist<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    save_excel<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 4 月 17 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>

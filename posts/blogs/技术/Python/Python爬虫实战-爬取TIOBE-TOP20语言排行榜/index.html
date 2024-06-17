@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="Python爬虫实战 - 爬取TIOBE TOP20语言排行榜 - 拔电关机"><meta name="description" content="使用python爬虫的实践记录。"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Python/Python%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98-%E7%88%AC%E5%8F%96TIOBE-TOP20%E8%AF%AD%E8%A8%80%E6%8E%92%E8%A1%8C%E6%A6%9C/"><meta property="og:title" content="Python爬虫实战 - 爬取TIOBE TOP20语言排行榜 - 拔电关机"><meta property="og:description" content="使用python爬虫的实践记录。"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/Python/Python%E7%88%AC%E8%99%AB%E5%AE%9E%E6%88%98-%E7%88%AC%E5%8F%96TIOBE-TOP20%E8%AF%AD%E8%A8%80%E6%8E%92%E8%A1%8C%E6%A6%9C/"><meta property="twitter:title" content="Python爬虫实战 - 爬取TIOBE TOP20语言排行榜 - 拔电关机"><meta property="twitter:description" content="使用python爬虫的实践记录。"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">技术 </span> <span class="category-eyebrow__date">2022 年 4 月 5 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">Python爬虫实战 - 爬取TIOBE TOP20语言排行榜</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">使用python爬虫的实践记录。</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/技术" class="tag"> 技术 </a><a href="/tags/Python" class="tag"> Python </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h2 class="page-body-header" id="python-爬虫实战---爬取-tiobe-top20-语言排行榜">Python 爬虫实战 - 爬取 TIOBE TOP20 语言排行榜</h2>
+<div class="page-body-copy">URL: <a href="https://www.tiobe.com/tiobe-index/">index | TIOBE - The Software Quality Company</a></div>
+<div class="page-body-copy">IDE: PyCharm Professional</div>
+<div class="page-body-copy">要爬取的是排名前 20 的语言榜单，并将其存成文本文件和生成词云。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-1.DhQIpo7a_Z1HF3Lv.webp" alt="python-spider-1" width="1171" height="610" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这个榜单包括 6 列，分别是 2022 年 3 月的排名(Mar 2022)、2021 年 3 月的排名(Mar 2021)、增减、程序语言(Programming Language)、占比(Ratings)、变化率(Change)。</div>
+<h4 class="page-body-header" id="前置准备">前置准备</h4>
+<div class="page-body-copy">导入要用的库：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+<span class="token keyword">import</span> re
+<span class="token keyword">import</span> wordcloud
+</code></pre>
+<div class="page-body-copy">requests 是用来发起 https 请求，并获取结果的。BeautifulSoup 用于解析网页 html 代码，re 用于正则匹配，wordcloud 用于生成词云。</div>
+<div class="page-body-copy">检查网页源代码，可以发现整个榜单放 id 为 top20 的 table 标签下：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-2.C8ceOB6A_j7QmF.webp" alt="python-spider-2" width="1918" height="787" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">榜单的主体在这个 table 标签的 tbody 标签下：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-3.BOtl5K4Q_28ihWy.webp" alt="python-spider-3" width="1918" height="891" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">而每一行都被划分在 tbody 一个 tr 标签下：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-4.DboZW7KQ_Z1G9yWt.webp" alt="python-spider-4" width="1905" height="475" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">知道这些就足够了，下面编写代码。</div>
+<h4 class="page-body-header" id="获取数据">获取数据</h4>
+<pre class="language-python"><code is:raw="" class="language-python">url <span class="token operator">=</span> <span class="token string">"https://www.tiobe.com/tiobe-index/"</span>
+res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>text<span class="token punctuation">,</span><span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+table <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"table"</span><span class="token punctuation">,</span> <span class="token builtin">id</span><span class="token operator">=</span><span class="token string">"top20"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"tbody"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"tr"</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">上述代码获取了网页 html 源码并解析，返回一个 soup 对象，使用 find 和 find_all 函数根据标签查找，获取 tr 标签下数据组成的列表。</div>
+<div class="page-body-copy">接下来将其打印出来看看：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-5.CmpDq2Qn_2a1XoK.webp" alt="python-spider-5" width="1783" height="490" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">打印出了每一个 tr 标签下的内容，要获取的数据就在其中：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">for</span> item <span class="token keyword">in</span> table<span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>item<span class="token punctuation">.</span>text<span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">那直接取出文本：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-6.DQfVzj4w_Z2jGIOM.webp" alt="python-spider-6" width="920" height="537" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">现在拿到的数据就很间接了，程序将单个标签下所有的文本都连接到了一起。</div>
+<div class="page-body-copy">现在已经获取到了数据，接下来要做的是数据处理。</div>
+<h4 class="page-body-header" id="数据处理">数据处理</h4>
+<div class="page-body-copy">现在获取的仅仅是文本，接下来要对其进行分割。</div>
+<div class="page-body-copy">这时派上用场的是正则表达式。</div>
+<div class="page-body-copy">这里使用 re 模块中的 search 函数：</div>
+<pre class="language-python"><code is:raw="" class="language-python">re<span class="token punctuation">.</span>search<span class="token punctuation">(</span>pattern<span class="token punctuation">,</span> string<span class="token punctuation">,</span> flags<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token comment"># 扫描整个字符串并返回第一个成功的匹配。</span>
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>参数</th><th>描述</th></tr></thead><tbody><tr><td>pattern</td><td>匹配的正则表达式</td></tr><tr><td>string</td><td>要匹配的字符串</td></tr><tr><td>flags</td><td>标志位，用于控制正则表达式的匹配方式，如：是否区分大小写，多行匹配等等</td></tr></tbody></table>
+<div class="page-body-copy">不难发现，在上面爬到的文本中，每一行的第一个数字就是语言的当前排名(1,2,3…)，因此这是固定的，后面紧跟的数字是去年排名，再跟着的若干单词是语言的名字，随后两个百分数就是占比和变化率。</div>
+<div class="page-body-copy">那么每一次循环中，都是对一行的文本中数据的提取。</div>
+<div class="page-body-copy">首先剔除每一行的第一个数字即当前排名，那么到字母之前剩下的数字就是去年排名，可以轻易的写出正则表达式”[0-9]+“，来匹配第一个出现的纯数字。</div>
+<div class="page-body-copy">随后就是语言名字了，直接匹配第一个非数字字符串即可，即”\D+“。</div>
+<div class="page-body-copy">接下来要匹配占比，显然这个百分数后面都会跟着一个正号或负号，因此表达式可以写成</div>
+<div class="page-body-copy">”(\d+.([0-9]<em>?)%+)|(\d+.([0-9]</em>?)%-)“，最后剩下的是变化率，这个百分数之前都。有正负号，所以可以直接写出”-(.<em>?)%|+(.</em>?)%“。最后得到的结果用.group()函数取出即可。</div>
+<div class="page-body-copy">每一行提取出的数据放到一个元组里：</div>
+<pre class="language-python"><code is:raw="" class="language-python">current_rand <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">for</span> item <span class="token keyword">in</span> table<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> current_rand <span class="token operator">&#x3C;</span> <span class="token number">10</span><span class="token punctuation">:</span>
+        target <span class="token operator">=</span> item<span class="token punctuation">.</span>text<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        target <span class="token operator">=</span> item<span class="token punctuation">.</span>text<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    previous_rand <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"[0-9]+"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    language <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"(\D)+"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ratings <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"(\d+\.([0-9]*?)%\+)|(\d+\.([0-9]*?)%-)"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+    change <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"-(.*?)%|\+(.*?)%"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    current_rand <span class="token operator">=</span> current_rand <span class="token operator">+</span> <span class="token number">1</span>
+</code></pre>
+<div class="page-body-copy">再循环中将结果打印：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-7.BsXuBqP1_Z1vJUct.webp" alt="python-spider-7" width="971" height="485" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">因为最后的结果要保存，所以要定义一个列表，将元组放到列表中。</div>
+<div class="page-body-copy">考虑到要生成词云，所以同样要定义一个字典，与程序语言名称为 key，以占比为值，这里要把百分比的%去掉，然后转化为浮点数：</div>
+<pre class="language-python"><code is:raw="" class="language-python">words <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+current_rand <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">for</span> item <span class="token keyword">in</span> table<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> current_rand <span class="token operator">&#x3C;</span> <span class="token number">10</span><span class="token punctuation">:</span>
+        target <span class="token operator">=</span> item<span class="token punctuation">.</span>text<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        target <span class="token operator">=</span> item<span class="token punctuation">.</span>text<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    previous_rand <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"[0-9]+"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    language <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"(\D)+"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ratings <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"(\d+\.([0-9]*?)%\+)|(\d+\.([0-9]*?)%-)"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+    change <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"-(.*?)%|\+(.*?)%"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    result<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>current_rand<span class="token punctuation">)</span><span class="token punctuation">,</span> previous_rand<span class="token punctuation">,</span> language<span class="token punctuation">,</span> ratings<span class="token punctuation">,</span> change<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    words<span class="token punctuation">[</span>language<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">float</span><span class="token punctuation">(</span>ratings<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"%"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    current_rand <span class="token operator">=</span> current_rand <span class="token operator">+</span> <span class="token number">1</span>
+</code></pre>
+<div class="page-body-copy">得到列表后，保存文本文件：</div>
+<pre class="language-python"><code is:raw="" class="language-python">f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"result.txt"</span><span class="token punctuation">,</span> <span class="token string">"w+"</span><span class="token punctuation">)</span>
+f<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">"Mar 2022  	Mar 2021  	Programming Language	Ratings	    Change\n"</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> item <span class="token keyword">in</span> result<span class="token punctuation">:</span>
+    line <span class="token operator">=</span> <span class="token string">"{:&#x3C;10}\t{:&#x3C;10}\t{:&#x3C;20}\t{:&#x3C;10}\t{:&#x3C;10}"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>line <span class="token operator">+</span> <span class="token string">"\n"</span><span class="token punctuation">)</span>
+f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">上述代码中使用了格式化字符串，利用了 format 函数，利用 open 函数打开一个文件，指定标志为”w+“，使用 write 函数向其中写入数据，使用 close 函数最后关闭文件。</div>
+<div class="page-body-copy">如下是生成词云的代码，width 和 height 指定长宽，background_color 制定背景色：</div>
+<pre class="language-python"><code is:raw="" class="language-python">w <span class="token operator">=</span> wordcloud<span class="token punctuation">.</span>WordCloud<span class="token punctuation">(</span>width<span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">,</span> height<span class="token operator">=</span><span class="token number">700</span><span class="token punctuation">,</span> background_color<span class="token operator">=</span><span class="token string">"white"</span><span class="token punctuation">)</span>
+w<span class="token punctuation">.</span>generate_from_frequencies<span class="token punctuation">(</span>words<span class="token punctuation">)</span>
+w<span class="token punctuation">.</span>to_file<span class="token punctuation">(</span><span class="token string">"result.png"</span><span class="token punctuation">)</span>
+</code></pre>
+<div class="page-body-copy">generate_from_frequencies 接收一个字典。</div>
+<div class="page-body-copy">最后 to_file 生成最后的图片文件。</div>
+<div class="page-body-copy">完整代码如下：</div>
+<pre class="language-python"><code is:raw="" class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">from</span> bs4 <span class="token keyword">import</span> BeautifulSoup
+<span class="token keyword">import</span> re
+<span class="token keyword">import</span> wordcloud
+
+url <span class="token operator">=</span> <span class="token string">"https://www.tiobe.com/tiobe-index/"</span>
+res <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+soup <span class="token operator">=</span> BeautifulSoup<span class="token punctuation">(</span>res<span class="token punctuation">.</span>text<span class="token punctuation">,</span><span class="token string">"html.parser"</span><span class="token punctuation">)</span>
+table <span class="token operator">=</span> soup<span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"table"</span><span class="token punctuation">,</span> <span class="token builtin">id</span><span class="token operator">=</span><span class="token string">"top20"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find<span class="token punctuation">(</span><span class="token string">"tbody"</span><span class="token punctuation">)</span><span class="token punctuation">.</span>find_all<span class="token punctuation">(</span><span class="token string">"tr"</span><span class="token punctuation">)</span>
+
+words <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+current_rand <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">for</span> item <span class="token keyword">in</span> table<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> current_rand <span class="token operator">&#x3C;</span> <span class="token number">10</span><span class="token punctuation">:</span>
+        target <span class="token operator">=</span> item<span class="token punctuation">.</span>text<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        target <span class="token operator">=</span> item<span class="token punctuation">.</span>text<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+    previous_rand <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"[0-9]+"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    language <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"(\D)+"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    ratings <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"(\d+\.([0-9]*?)%\+)|(\d+\.([0-9]*?)%-)"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+    change <span class="token operator">=</span> re<span class="token punctuation">.</span>search<span class="token punctuation">(</span><span class="token string">r"-(.*?)%|\+(.*?)%"</span><span class="token punctuation">,</span> target<span class="token punctuation">)</span><span class="token punctuation">.</span>group<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    result<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token builtin">str</span><span class="token punctuation">(</span>current_rand<span class="token punctuation">)</span><span class="token punctuation">,</span> previous_rand<span class="token punctuation">,</span> language<span class="token punctuation">,</span> ratings<span class="token punctuation">,</span> change<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    words<span class="token punctuation">[</span>language<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">float</span><span class="token punctuation">(</span>ratings<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token string">"%"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    current_rand <span class="token operator">=</span> current_rand <span class="token operator">+</span> <span class="token number">1</span>
+
+f <span class="token operator">=</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"result.txt"</span><span class="token punctuation">,</span> <span class="token string">"w+"</span><span class="token punctuation">)</span>
+f<span class="token punctuation">.</span>write<span class="token punctuation">(</span><span class="token string">"Mar 2022  	Mar 2021  	Programming Language	Ratings	    Change\n"</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> item <span class="token keyword">in</span> result<span class="token punctuation">:</span>
+    line <span class="token operator">=</span> <span class="token string">"{:&#x3C;10}\t{:&#x3C;10}\t{:&#x3C;20}\t{:&#x3C;10}\t{:&#x3C;10}"</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>item<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> item<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>line <span class="token operator">+</span> <span class="token string">"\n"</span><span class="token punctuation">)</span>
+f<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+w <span class="token operator">=</span> wordcloud<span class="token punctuation">.</span>WordCloud<span class="token punctuation">(</span>width<span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">,</span> height<span class="token operator">=</span><span class="token number">700</span><span class="token punctuation">,</span> background_color<span class="token operator">=</span><span class="token string">"white"</span><span class="token punctuation">)</span>
+w<span class="token punctuation">.</span>generate_from_frequencies<span class="token punctuation">(</span>words<span class="token punctuation">)</span>
+w<span class="token punctuation">.</span>to_file<span class="token punctuation">(</span><span class="token string">"result.png"</span><span class="token punctuation">)</span>
+
+
+</code></pre>
+<div class="page-body-copy">最后生成了如下的文本文件：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-8.C771Ij7t_239EQ7.webp" alt="python-spider-8" width="928" height="481" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">以及词云图片：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/python-spider-9.D_475f-1_Z1cLU9U.webp" alt="python-spider-9" width="1000" height="700" loading="lazy" decoding="async"></div></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 4 月 5 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>

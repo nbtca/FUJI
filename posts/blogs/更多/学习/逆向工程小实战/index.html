@@ -1,0 +1,325 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="逆向工程实战 - 拔电关机"><meta name="description" content="逆向破解的一系列教程。"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%9B%B4%E5%A4%9A/%E5%AD%A6%E4%B9%A0/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E5%B0%8F%E5%AE%9E%E6%88%98/"><meta property="og:title" content="逆向工程实战 - 拔电关机"><meta property="og:description" content="逆向破解的一系列教程。"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%9B%B4%E5%A4%9A/%E5%AD%A6%E4%B9%A0/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E5%B0%8F%E5%AE%9E%E6%88%98/"><meta property="twitter:title" content="逆向工程实战 - 拔电关机"><meta property="twitter:description" content="逆向破解的一系列教程。"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">学习 </span> <span class="category-eyebrow__date">2022 年 3 月 30 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">逆向工程实战</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">逆向破解的一系列教程。</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/学习" class="tag"> 学习 </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h1 class="page-body-header" id="逆向工程实战">逆向工程实战</h1>
+<h2 class="page-body-header" id="破解软件序列号">破解软件序列号</h2>
+<div class="page-body-copy">这一部分主要讲述破解《加密与解密》一书中一个带有序列号保护机制的程序。</div>
+<div class="page-body-copy">调试工具: OllyDBG(吾爱破解专版)</div>
+<div class="page-body-copy">操作系统: Windows 10</div>
+<h3 class="page-body-header" id="观察功能">观察功能</h3>
+<div class="page-body-copy">首先点击软件运行：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330191605526.C8ZtWGNK_Z2qhoV3.webp" alt="image-20220330191605526" width="380" height="335" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">弹出注册对话框，向输入框随便输入一些字符：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330191552434.JH5AnHKU_Z1T6SHl.webp" alt="image-20220330191552434" width="250" height="184" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">程序弹窗，报出输入错误。</div>
+<h3 class="page-body-header" id="初步调试">初步调试</h3>
+<div class="page-body-copy">在此之前，书中给出了一些提示信息，本程序采用非对等函数检查序列号，用户名是纯英文字符串，序列号是纯数字。</div>
+<div class="page-body-copy">如果输入的用户名和序列号满足 F1(用户名)=F2(序列号) ，则认为是正确的序列号。</div>
+<div class="page-body-copy">采用这种方法，可以使内存中不出现明码。</div>
+<div class="page-body-copy">现在使用 OllyDBG 调试该程序：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195111975.CYTGUosy_2nsEVJ.webp" alt="image-20220330195111975" width="939" height="354" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">在程序的开头可以看见一些 win32 窗口程序的启动代码。</div>
+<div class="page-body-copy">例如<code>RegisterClass</code>和<code>CreateWindow</code>函数都是一些创建窗口的必要操作，但这些并非是关注的重点：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195134746.BwRnUmcv_Z13WbdN.webp" alt="image-20220330195134746" width="1161" height="352" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">现在右击界面-><strong>search for</strong>-><strong>All referenced strings text</strong> 查看字符串列表：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195213303.DDngRtku_Z1WJeeU.webp" alt="image-20220330195213303" width="793" height="258" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可以看到一些字符串信息。</div>
+<div class="page-body-copy">双击其中”Incorrect! Try again”字符串，就可以来到对应代码处：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195242736.H6-9GIRZ_ZhtAM3.webp" alt="image-20220330195242736" width="964" height="122" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">观察代码可知，这里的操作是弹窗，调用<code>MessageBox</code>函数，告知用户输入错误，在此处打上断点。</div>
+<div class="page-body-copy">按 F9，执行到底，可以发现窗口被完全显示了出来，现在再点开注册对话框，向 name 输入”test”，向序列号输入”123456”：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195316160.C3ZN7qX2_ZoS5DA.webp" alt="image-20220330195316160" width="1160" height="156" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">程序停在了断点处，此时再打开字符串列表：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195408233.KaDZyjid_Z1SkLFm.webp" alt="image-20220330195408233" width="739" height="278" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">现在可以找到刚刚输入的内容，双击查看：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195423616.E0OXquHb_Z2nq7O8.webp" alt="image-20220330195423616" width="806" height="100" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">不难推测，这两个 push 字符串的操作紧跟着的两个 call 分别都调用了各自的转换函数，即上文提到的 F 和 F2，在这两个地方下断点。</div>
+<div class="page-body-copy"><code>Ctrl+F2</code>重启程序，按 F9 后点开注册对话框，输入和之前一样的字符，运行到断点处：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195523647.CsLlCgyY_ZbJsf9.webp" alt="image-20220330195523647" width="899" height="88" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">继续往下执行，之后可以发现运行下面高亮处代码后就会报出错误窗口：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195541775.ByWFbOzw_1evCRW.webp" alt="image-20220330195541775" width="786" height="138" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">实际上是跳转到了下方的代码，之前提到的调用了<code>MessageBox</code>的位置：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195559752.CmnALugd_ZSRH43.webp" alt="image-20220330195559752" width="1160" height="161" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">重启程序，查看刚刚的位置：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195619070.B-rOAtPO_1YMAYW.webp" alt="image-20220330195619070" width="598" height="92" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>je</code>指令显然是个条件判断，可以推测这里是在判断结果正确性，如果不正确则不跳转，往下执行，之后弹窗。</div>
+<div class="page-body-copy">那就将<code>je</code>修改一下即可，将高亮行放在<code>je</code>指令上，按空格键：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330195637768.2GttON7-_Z1KpjjY.webp" alt="image-20220330195637768" width="682" height="282" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">修改完毕，继续执行：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194913160.E-6TRNaS_ZePPld.webp" alt="image-20220330194913160" width="609" height="106" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">运行到此处：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194855414.CrG-CVN-_Z2hmc6J.webp" alt="image-20220330194855414" width="537" height="117" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">程序完美地越过了上一个 call，没有引发报错弹窗：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194831295.BBB5xLNt_25Dixh.webp" alt="image-20220330194831295" width="803" height="114" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><strong>破解成功</strong>！</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194805471.CVsBR3Tr_Z3y9vQ.webp" alt="image-20220330194805471" width="377" height="176" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">实际上这段程序是执行到了下面的代码位置：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194742864.CSI38RE3_VvnaB.webp" alt="image-20220330194742864" width="1220" height="107" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="算法逆向">算法逆向</h3>
+<div class="page-body-copy">现在来尝试还原两个加密函数，现在回车进入第一个加密函数 F1(call 0040137E 处)：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194659075.B_xBvwnU_Z290CBc.webp" alt="image-20220330194659075" width="1221" height="498" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">第一句代码是将 esp+0x4 地址处的数据放入寄存器，显然这是压入栈的字符串”test”的首地址，在后续的一系列操作结束后，会将这个值再从栈取出，来指向字符串首地址。</div>
+<div class="page-body-copy"><code>push esi</code>是将 esi 寄存器的值入栈，mov 指令是取字符串中的 1 个字节，test al,al 是判断是否为 0 ，实际上是在判断是否到了字符串的末尾：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194630302.BLhTiWo1_NpEUW.webp" alt="image-20220330194630302" width="665" height="69" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">如果到了末尾，那么 test 指令就会修改标志寄存器对应的比特位，下一行的 je 指令就会被执行，直接跳转到其他地方。</div>
+<div class="page-body-copy">如果没有到末尾，那么这一句指令不会被执行，而是继续顺序往下执行。cmp al,0x41 的作用是比较，在上面的操作中，al 已经存入了字符串中的 1 个字节，那么这一步操作实际上是在比较字符 ASCII 值的大小，配合 jb 指令可以判断是否为字母，如果不是字母则跳转到 004013AC，这个地址就是弹出错误窗口的代码处：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194610223.lBzYrDFC_2lTeGh.webp" alt="image-20220330194610223" width="1392" height="176" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">同理<code>cmp al,0x5A</code>是和字母 Z 比较，配合<code>jnb</code>指令，判断是否为小写字母，如果是小写字母，则跳到 00401394 ，执行 call 004013D2，查看 004013D2 处代码：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194547967.DUMm1OEl_2qaFu4.webp" alt="image-20220330194547967" width="692" height="79" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>sub al,0x20</code>是将 al 中的值减去 0x20，实际上是将 ACII 码减去 0x20，目的是将小写字母转换为大写字母，然后再将结果放到原来的地址[esi]中。</div>
+<div class="page-body-copy"><code>inc esi</code>，是将 esi 中的值自加 1 ，在代码中的目的是指向字符串中的下一个字符，可以当成一个“指针”，转换大小写后同样要将 esi 加 1 以指向下一个字符，因此这里有两处<code>inc esi</code>。</div>
+<div class="page-body-copy">下一个<code>jmp</code>指令是回跳到前面的代码地址，显然这是在循环中。那么这个循环的退出条件显然是上文提到的字符串中的字符全被取完。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194516902.J9CEpwA8_Z1gcx8G.webp" alt="image-20220330194516902" width="705" height="71" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">循环过后，<code>pop esi</code>的目的是重新指向字符串首地址，将最初压入栈的 esi+0x4 地址处的值放入 esi。</div>
+<div class="page-body-copy">现在重新指向字符串首地址后，又执行了 call 004013C2，现在查看对应代码：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194453624.YHadnD7m_ZQJBm7.webp" alt="image-20220330194453624" width="754" height="245" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>xor edi,edi</code>是清 0 操作，数字和自己做异或运算结果是 0 ，同样<code>xor ebx,ebx</code>也是清 0。</div>
+<div class="page-body-copy">下面的<code>mov</code>操作和上文提到过的一样，是取一个字符，<code>je</code>同样是条件判断，结合下面的<code>inc</code>指令和<code>jmp</code>指令来看，循环取出 1 个字符进行操作，当字符取完则跳到<code>retn</code>指令。</div>
+<div class="page-body-copy">未取完字符时，执行 add edi,ebx。</div>
+<div class="page-body-copy">bl 存储的数据是 ebx 寄存器中数据的低 8 位，或者说是 ebx 的低字节(ebx 的高 8 位是 bh,低 8 位是 bl)，现在 ebx 的高 8 位都是 0 ，那么实际上 ebx 存储的就是字符的值。因为 add 指令要求所操作的寄存器宽度一样，所以不能直接拿 bl 进行运算。</div>
+<div class="page-body-copy">那么这一步 add 的操作就是将字符的值加到 edi 里，整个代码的作用是循环将用户输入的字符的值加到一个变量里。</div>
+<div class="page-body-copy">函数结束后，edi 中保存的就是所以字符值的和，<code>xor edi,0x5678</code>就是将这个和与 0x5678 做异或运算。</div>
+<div class="page-body-copy">那么到这里，整个函数已经很清晰了。这个函数在做的操作是循环取出整个字符串的每个字符，如果不是字母则报错，如果是小写字母则减 0x20 转成大写字母，同时将这些字符的值求和，与 0x5678 异或。</div>
+<div class="page-body-copy">现在可以轻松写出对应的 C 语言代码：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token keyword">int</span> <span class="token function">F1</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span> k1 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">char</span> ch<span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> name<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ch <span class="token operator">=</span> name<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ch <span class="token operator">&#x3C;</span> <span class="token char">'A'</span><span class="token punctuation">)</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ch <span class="token operator">></span> <span class="token char">'Z'</span><span class="token punctuation">)</span>
+      ch <span class="token operator">-=</span> <span class="token number">0x20</span><span class="token punctuation">;</span>
+    k1 <span class="token operator">+=</span> ch<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  k1 <span class="token operator">^=</span> <span class="token number">0x5678</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> k1<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">下面就看 F2 的代码：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194426456.DJsvBnRW_Z1W4XxE.webp" alt="image-20220330194426456" width="891" height="343" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">前 3 步<code>xor</code>都是将寄存器清 0 ，下面的<code>mov</code>是取出字符串首地址放入 esi，esi 作为指针指向字符串首地址。</div>
+<div class="page-body-copy"><code>mov al,0xA</code>将 eax 的值设置为 0xA，紧接着的<code>mov bl</code>,…、<code>test bl,bl</code> 和<code>je</code> … 是从字符串取出一个字符和判 0 。</div>
+<div class="page-body-copy">sub b1,0x30 是将寄存器中的值减去 0x30，即是将字符的值减去 0x30，<code>imul edi,eax</code>是将 edi 和 eax 作乘法，这里 eax 已经赋值为 10 了，因此这条指令等价于 edi = edi * 10。</div>
+<div class="page-body-copy">其后的 add 指令是将 edi 的值与 ebx 的值相加。</div>
+<div class="page-body-copy">这几条语句连贯起来看，其实就是 edi = (edi*10) + (字符-0x30)，循环这个操作。整个循环结束后将 edi 的值与 0x1234 异或，放入 ebx 作为返回值。</div>
+<div class="page-body-copy">分析后，可以很轻松还原出下列代码：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token keyword">int</span> <span class="token function">F2</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>code<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span> k2 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> code<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    k2 <span class="token operator">+=</span> k2 <span class="token operator">*</span> <span class="token number">10</span> <span class="token operator">+</span> code<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token number">0x30</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  k2 <span class="token operator">^=</span> <span class="token number">0x1234</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> k2<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">从上述代码不难看出，代码中的循环实际上是将数字字符串转化为 int 型纯数字(“123456”->123456)。</div>
+<div class="page-body-copy">现在只要上述两个函数的返回 k1 与 k2 相等，即可注册成功。</div>
+<div class="page-body-copy">编写注册机时要对函数 F1 或 F2 进行逆变换，如果不能就只能穷举了。</div>
+<div class="page-body-copy">异或运算是可以求逆的，还有这里有个小细节要注意：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194354839.B9_LriUp_1JBQ4q.webp" alt="image-20220330194354839" width="1164" height="104" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">观察<code>GetDlgItemTextA</code>的参数可知，该函数只读入 11(0xB)个字符，末尾的 0 用去 1 个，那么实际的 name 字符串只有 10 个字符。</div>
+<div class="page-body-copy">下面是完整的注册机代码:</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+<span class="token keyword">int</span> <span class="token function">keygen</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span> k1 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> k2 <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token keyword">char</span> ch<span class="token punctuation">;</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> name<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">&#x26;&#x26;</span> i <span class="token operator">&#x3C;=</span> <span class="token number">9</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ch <span class="token operator">=</span> name<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ch <span class="token operator">&#x3C;</span> <span class="token char">'A'</span><span class="token punctuation">)</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>ch <span class="token operator">></span> <span class="token char">'Z'</span><span class="token punctuation">)</span>
+      ch <span class="token operator">-=</span> <span class="token number">0x20</span><span class="token punctuation">;</span>
+    k1 <span class="token operator">+=</span> ch<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  k2 <span class="token operator">=</span> k1 <span class="token operator">^</span> <span class="token number">0x5678</span> <span class="token operator">^</span> <span class="token number">0x1234</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> k2<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">char</span> name<span class="token punctuation">[</span><span class="token number">11</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"input name: "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">scanf_s</span><span class="token punctuation">(</span><span class="token string">"%s"</span><span class="token punctuation">,</span> name<span class="token punctuation">,</span> <span class="token number">11</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token function">keygen</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">输入该注册码，注册成功！</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330194322408.BDU-_X_K_1Uoi1R.webp" alt="image-20220330194322408" width="352" height="164" loading="lazy" decoding="async"></div>
+<h2 class="page-body-header" id="解除软件使用时限">解除软件使用时限</h2>
+<div class="page-body-copy">这一部分主要讲述对《加密与解密》一书中一个带有时间限制的程序的破解。</div>
+<div class="page-body-copy">开发工具: Visual Studio 2019。</div>
+<h3 class="page-body-header" id="前置知识">前置知识</h3>
+<div class="page-body-copy">时间限制程序有两类，一类是限制每次运行的时长，另一类是每次运行时长不限，但是有时间限制，例如 30 天、 14 天、 7 天等。</div>
+<h4 class="page-body-header" id="计时器">计时器</h4>
+<div class="page-body-copy">有一类程序，每次运行时都有时间限制，例如运行 10 分钟或者 20 分钟就停止，必须重新运行程序才可正常工作。</div>
+<div class="page-body-copy">这类程序里有一个计时器来统计程序运行的时间。在 Windows 系统中，有如下选择可以实现一个计时器。</div>
+<h4 class="page-body-header" id="settimer-函数">SetTimer 函数</h4>
+<div class="page-body-copy">微软官方文档中函数原型如下:</div>
+<pre class="language-c"><code is:raw="" class="language-c">UINT_PTR <span class="token function">SetTimer</span><span class="token punctuation">(</span>
+    <span class="token punctuation">[</span> in<span class="token punctuation">,</span> optional <span class="token punctuation">]</span> HWND hWnd<span class="token punctuation">,</span> <span class="token punctuation">[</span>in<span class="token punctuation">]</span> UINT_PTR nIDEvent<span class="token punctuation">,</span> <span class="token punctuation">[</span>in<span class="token punctuation">]</span> UINT uElapse<span class="token punctuation">,</span>
+    <span class="token punctuation">[</span> in<span class="token punctuation">,</span> optional <span class="token punctuation">]</span> TIMERPROC lpTimerFunc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<ul>
+<li><code>hWnd</code> ：窗口句柄，若计时器到时，系统会向这个窗口发送<code>WM_TIMER</code>消息；</li>
+<li><code>nIDEvent</code> ：计时器标识；</li>
+<li><code>uElapse</code> ：指定计时器时间间隔；</li>
+<li><code>TIMEPROC</code> ：回调函数。若计时器超时，系统将调用这个函数。如果为 NULL，若计时器超时，将向相应的窗口发送<code>WM_TIMER</code>消息。</li>
+</ul>
+<div class="page-body-copy">应用程序可在初始化时调用这个 API 函数，向系统申请一个计时器并指定计时器的时间间隔，同时获得一个处理计时器超时的回调函数。</div>
+<div class="page-body-copy">若计时器超时，系统会向申请该计时器的窗口过程发送消息<code>WM_TIMER</code>，或者调用程序提供的回调函数。</div>
+<div class="page-body-copy"><code>SetTimer</code>函数是以 Windows 消息的方式工作的，精度受到了一定的限制。</div>
+<div class="page-body-copy">当程序不需要计时器时，可以调用<code>KillTimer</code>函数来销毁。</div>
+<div class="page-body-copy">下面直接通过程序来演示：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"stdio.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"windows.h"</span></span>
+
+LRESULT CALLBACK <span class="token function">MainWndProc</span><span class="token punctuation">(</span>HWND<span class="token punctuation">,</span> UINT<span class="token punctuation">,</span> WPARAM<span class="token punctuation">,</span> LPARAM<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 窗口回调函数</span>
+<span class="token keyword">void</span> CALLBACK <span class="token function">TimeProc</span><span class="token punctuation">(</span>HWND<span class="token punctuation">,</span> UINT<span class="token punctuation">,</span> UINT<span class="token punctuation">,</span> DWORD<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> APIENTRY <span class="token function">WinMain</span><span class="token punctuation">(</span>HINSTANCE hInstance<span class="token punctuation">,</span> HINSTANCE hPrevInstance<span class="token punctuation">,</span>
+                     LPSTR szCmdLine<span class="token punctuation">,</span> <span class="token keyword">int</span> nCmdShow<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">char</span> szClassName<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"MainWClass"</span><span class="token punctuation">;</span>
+  <span class="token comment">//定义窗口类</span>
+  WNDCLASSEX wndclass <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">//窗口类大小</span>
+  wndclass<span class="token punctuation">.</span>cbSize <span class="token operator">=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>wndclass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//纵横向重画</span>
+  wndclass<span class="token punctuation">.</span>style <span class="token operator">=</span> CS_HREDRAW <span class="token operator">|</span> CS_VREDRAW<span class="token punctuation">;</span>
+  <span class="token comment">//绑定回调函数</span>
+  wndclass<span class="token punctuation">.</span>lpfnWndProc <span class="token operator">=</span> MainWndProc<span class="token punctuation">;</span>
+  <span class="token comment">//绑定实例句柄</span>
+  wndclass<span class="token punctuation">.</span>hInstance <span class="token operator">=</span> hInstance<span class="token punctuation">;</span>
+  <span class="token comment">//加载默认图标</span>
+  wndclass<span class="token punctuation">.</span>hIcon <span class="token operator">=</span> <span class="token operator">::</span><span class="token function">LoadIcon</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> IDI_APPLICATION<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//加载默认光标</span>
+  wndclass<span class="token punctuation">.</span>hCursor <span class="token operator">=</span> <span class="token operator">::</span><span class="token function">LoadCursor</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> IDC_ARROW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//加载背景 白色画刷</span>
+  wndclass<span class="token punctuation">.</span>hbrBackground <span class="token operator">=</span> <span class="token punctuation">(</span>HBRUSH<span class="token punctuation">)</span><span class="token operator">::</span><span class="token function">GetStockObject</span><span class="token punctuation">(</span>WHITE_BRUSH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  wndclass<span class="token punctuation">.</span>lpszClassName <span class="token operator">=</span> szClassName<span class="token punctuation">;</span>
+  <span class="token comment">//向系统内核注册窗口类</span>
+  <span class="token operator">::</span><span class="token function">RegisterClassEx</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>wndclass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//创建主窗口</span>
+  HWND hWnd <span class="token operator">=</span> <span class="token operator">::</span><span class="token function">CreateWindowEx</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span>
+                               szClassName<span class="token punctuation">,</span> <span class="token comment">//类名</span>
+                               <span class="token string">"win32 窗口程序"</span><span class="token punctuation">,</span> WS_OVERLAPPEDWINDOW<span class="token punctuation">,</span>
+                               CW_USEDEFAULT<span class="token punctuation">,</span> CW_USEDEFAULT<span class="token punctuation">,</span> CW_USEDEFAULT<span class="token punctuation">,</span>
+                               CW_USEDEFAULT<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> hInstance<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">SetTimer</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">,</span> TimeProc<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 设定计时器</span>
+  <span class="token comment">//错误处理</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token constant">NULL</span> <span class="token operator">==</span> hWnd<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token operator">::</span><span class="token function">MessageBox</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token string">"Create Window failed"</span><span class="token punctuation">,</span> <span class="token string">"ERROR"</span><span class="token punctuation">,</span> MB_OK<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">//显示窗口</span>
+  <span class="token operator">::</span><span class="token function">ShowWindow</span><span class="token punctuation">(</span>hWnd<span class="token punctuation">,</span> nCmdShow<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token operator">::</span><span class="token function">UpdateWindow</span><span class="token punctuation">(</span>hWnd<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment">//从操作系统的消息队列中不断检索消息</span>
+  MSG msg<span class="token punctuation">;</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">::</span><span class="token function">GetMessage</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>msg<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token operator">::</span><span class="token function">TranslateMessage</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//翻译消息</span>
+    <span class="token operator">::</span><span class="token function">DispatchMessage</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//派发消息</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> msg<span class="token punctuation">.</span>wParam<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+LRESULT CALLBACK <span class="token function">MainWndProc</span><span class="token punctuation">(</span>HWND hWnd<span class="token punctuation">,</span> UINT message<span class="token punctuation">,</span> WPARAM wParam<span class="token punctuation">,</span>
+                             LPARAM lParam<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">switch</span> <span class="token punctuation">(</span>message<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">case</span> WM_DESTROY<span class="token operator">:</span>
+    <span class="token function">PostQuitMessage</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">//剩下的交给系统默认处理</span>
+  <span class="token keyword">return</span> <span class="token operator">::</span><span class="token function">DefWindowProc</span><span class="token punctuation">(</span>hWnd<span class="token punctuation">,</span> message<span class="token punctuation">,</span> wParam<span class="token punctuation">,</span> lParam<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> CALLBACK <span class="token function">TimeProc</span><span class="token punctuation">(</span>HWND hWnd<span class="token punctuation">,</span> UINT uMsg<span class="token punctuation">,</span> UINT idEvent<span class="token punctuation">,</span> DWORD dwTime<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  SYSTEMTIME time<span class="token punctuation">;</span>
+  <span class="token function">GetSystemTime</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  CHAR szTime<span class="token punctuation">[</span><span class="token number">255</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token function">sprintf_s</span><span class="token punctuation">(</span>szTime<span class="token punctuation">,</span> <span class="token string">"%d-%d-%d-%d:%d:%d"</span><span class="token punctuation">,</span> time<span class="token punctuation">.</span>wYear<span class="token punctuation">,</span> time<span class="token punctuation">.</span>wMonth<span class="token punctuation">,</span> time<span class="token punctuation">.</span>wDay <span class="token operator">+</span> <span class="token number">8</span><span class="token punctuation">,</span>
+            time<span class="token punctuation">.</span>wHour<span class="token punctuation">,</span> time<span class="token punctuation">.</span>wMinute<span class="token punctuation">,</span> time<span class="token punctuation">.</span>wSecond<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">MessageBox</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> szTime<span class="token punctuation">,</span> <span class="token string">"系统时间"</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">上述代码创建了一个窗口和一个计时器，设置 visual studio 链接器的子系统为窗口：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204302596.C-iDDZrl_1qXpo4.webp" alt="image-20220330204302596" width="735" height="503" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">运行程序：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330201027856.CV--8vEo_Z1aJ4eg.webp" alt="image-20220330201027856" width="247" height="243" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">运行结果上所示，定时器每 1 秒弹出一个窗口。</div>
+<h4 class="page-body-header" id="高精度多媒体计时器">高精度多媒体计时器</h4>
+<div class="page-body-copy">多媒体计时器的精度可以达到 1 毫秒，应用程序可以通过调用 TimeSetEvent 函数来启动一个多媒体计时器。</div>
+<pre class="language-c"><code is:raw="" class="language-c">MMRESULT <span class="token function">timeSetEvent</span><span class="token punctuation">(</span>UINT uDelay<span class="token punctuation">,</span> UINT uResolution<span class="token punctuation">,</span> LPTIMECALLBACK lpTimeProc<span class="token punctuation">,</span>
+                      DWORD_PTR dwUser<span class="token punctuation">,</span> UINT fuEvent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 class="page-body-header" id="gettickcount-函数">GetTickCount 函数</h4>
+<div class="page-body-copy">Windows 提供了 API 函数 GetTickCount()，该函数返回的是系统自成功启动以来所经过的时间(以毫秒为</div>
+<div class="page-body-copy">单位)。将该函数的两次返回值相减，就能知道程序已经运行了多久，这个函数的精度取决于系统的设</div>
+<div class="page-body-copy">置。</div>
+<h4 class="page-body-header" id="timegettime-函数">timeGetTime 函数</h4>
+<div class="page-body-copy">多媒体计时器函数 timeGetTime 也可以返回 windows 自启动后所经过的时间(以毫秒为单位)</div>
+<h3 class="page-body-header" id="拆解时间限制保护">拆解时间限制保护</h3>
+<div class="page-body-copy">打开实例程序：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204327843.D0AyutyU_Z2kMT7h.webp" alt="image-20220330204327843" width="482" height="304" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">只要下方的计时器走到 20 ，程序就会自动退出。</div>
+<div class="page-body-copy">书中提示这个程序使用了<code>SetTimer</code>函数，将其放入 OllyDBG 进行调试：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204357729.BYL6KgYc_Z2sgnl.webp" alt="image-20220330204357729" width="1459" height="759" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">右击界面-> <strong>search for</strong>-> <strong>All intermodular calls</strong> 打开调用 API 列表：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204421684.CqWT4_6m_Z2iqEAB.webp" alt="image-20220330204421684" width="635" height="346" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">双击此处，来到对应代码处：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204448123.C1iGoC44_Z2jUFOs.webp" alt="image-20220330204448123" width="854" height="364" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可以直接修改汇编代码，让程序跳过<code>call SetTimer</code>，如下所示：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204510290.CHgXkCSX_11lard.webp" alt="image-20220330204510290" width="935" height="130" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>jmp</code>指令使得执行流会越过<code>SetTimer</code>。</div>
+<div class="page-body-copy">按 F9 直接运行，可以发现，下方的计时数字消失了，证明计时器已经成功被拆除：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204531250.XPr-YxKp_2sghBL.webp" alt="image-20220330204531250" width="399" height="249" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">当然还有其他办法：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204958834.CSsNlh0c_2efMmC.webp" alt="image-20220330204958834" width="1091" height="104" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">这里可以发现一个比较，实际上 eax 存取的是当前计时，超过 0x13 则跳到另一处代码，此处代码执行的是<code>SendMessage</code>函数，向窗口发送<code>WM_CLOSE</code>消息来关闭窗口：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330205025475.BGXqzjVz_ZNYV08.webp" alt="image-20220330205025475" width="1025" height="167" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">可以修改这里的代码，将跳转语句修改为 nop：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330205052442.BSNPxDXt_Z8JuIN.webp" alt="image-20220330205052442" width="1093" height="86" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">现在按 F9，直接运行：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330205126602.CMOUQ7fB_ZxB9jS.webp" alt="image-20220330205126602" width="435" height="273" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">现在时间超出 20 也不会自行退出了。</div>
+<h3 class="page-body-header" id="扩展延伸">扩展延伸</h3>
+<div class="page-body-copy">一般软件的时限保护如下:</div>
+<div class="page-body-copy">在安装软件时，由安装程序取得当前系统日期，或者由主程序在软件第 1 次运行时获得系统日期，并将其记录在系统中某个地方(注册表、文件、扇区)。</div>
+<div class="page-body-copy">这个时间统称是软件的安装日期。程序每次运行时都要取得当前系统日期，将其与之前记录的安装日期进行比较。</div>
+<div class="page-body-copy">考虑周全的话，软件最少要保存两个时间值，一个时间值是上述说的安装时间，另一个是最近运行的时间。</div>
+<div class="page-body-copy">用于获取时间的 API 函数有<code>GetSystemTime</code>、<code>GetLocalTime</code>和<code>GetFileTime</code>，调试时可以考虑在这些函数上下断点。</div>
+<div class="page-body-copy">也可以利用<code>RegMon</code>、<code>FileMon</code>之类的软件进行监控，找到时间存放的位置。</div>
+<h2 class="page-body-header" id="突破菜单功能限制">突破菜单功能限制</h2>
+<blockquote>
+<p>实例来自看雪论坛的《加密与解密》。</p>
+</blockquote>
+<h3 class="page-body-header" id="前置介绍">前置介绍</h3>
+<div class="page-body-copy">这类程序一般是 Demo 版，其菜单或窗口中的部分选项是灰色的，无法使用。</div>
+<div class="page-body-copy">这种功能受限的程序一般分两种：</div>
+<ol>
+<li>一种是试用版和正式版的软件是完全不同的两个版本，被禁止的功能在试用版中根本没有相应代码，这些代码只有正式版中才有，而正式版是无法免费下载的，只能向软件作者购买。</li>
+<li>另一种是使用版和正式版为同一个文件。没有注册时按照试用版运行，禁止用户使用某些功能；注册之后就以正式版运行，用户可以使用其全部功能。可见，被禁止的那些功能的程序代码其实是存在于程序之中的，解密者只要通过一定方法就能恢复被限制的功能。</li>
+</ol>
+<div class="page-body-copy"><strong>相关函数</strong>：</div>
+<div class="page-body-copy">如果要将软件菜单和窗口变灰(不可用状态)，可以使用如下函数：</div>
+<pre class="language-c"><code is:raw="" class="language-c">BOOL <span class="token function">EnableMenuItem</span><span class="token punctuation">(</span><span class="token punctuation">[</span>in<span class="token punctuation">]</span> HMENU hMenu<span class="token punctuation">,</span> <span class="token punctuation">[</span>in<span class="token punctuation">]</span> UINT uIDEnableItem<span class="token punctuation">,</span>
+                    <span class="token punctuation">[</span>in<span class="token punctuation">]</span> UINT uEnable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<div class="page-body-copy"><code>hMenu</code>是菜单句柄，<code>uIDEnableItem</code>是允许或禁止的一个菜单条目的标识符，<code>uEnable</code>是控制标识。</div>
+<pre class="language-c"><code is:raw="" class="language-c">BOOL <span class="token function">EnableWindow</span><span class="token punctuation">(</span><span class="token punctuation">[</span>in<span class="token punctuation">]</span> HWND hWnd<span class="token punctuation">,</span> <span class="token punctuation">[</span>in<span class="token punctuation">]</span> BOOL bEnable<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<div class="page-body-copy"><code>hWnd</code>是窗口句柄，<code>hEnable</code>是控制标志。</div>
+<h3 class="page-body-header" id="调试软件">调试软件</h3>
+<div class="page-body-copy">该软件一部分文字和按钮都被禁用：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204030266.BqjQIp8k_2wuFeT.webp" alt="image-20220330204030266" width="403" height="275" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">放入 OllyDBG 进行调试：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330204000672.CzlHOTC0_ZO0l23.webp" alt="image-20220330204000672" width="1443" height="747" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">进入 API 列表：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330203859800.B_W2NFtz_Z4JNXK.webp" alt="image-20220330203859800" width="658" height="137" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">定位到该关键函数，双击进入对应代码处：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330203833874.BI9o8hXZ_2ofKoK.webp" alt="image-20220330203833874" width="1045" height="97" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">观察上方的<code>push</code>，可知传入该函数的参数。</div>
+<div class="page-body-copy">将上方的<code>push 0x1</code>修改为<code>push 0x0</code>，实际上就是将标志设为 0 ，按<code>F9</code>直接运行，发现原本禁用的按钮已经可以使用，点击后弹出窗口：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220330203752439.CeBeW34x_1O0WQg.webp" alt="image-20220330203752439" width="358" height="302" loading="lazy" decoding="async"></div></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 3 月 30 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" class="js no-touch progressive-image no-reduced-motion progressive"> <head><!-- Global Metadata --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v4.5.12"><!-- Primary Meta Tags --><title>拔电关机</title><meta name="title" content="从汇编角度看C语言 - 1 - 拔电关机"><meta name="description" content="反汇编C语言程序的解读。"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/C%E8%AF%AD%E8%A8%80/%E4%BB%8E%E6%B1%87%E7%BC%96%E8%A7%92%E5%BA%A6%E7%9C%8BC%E8%AF%AD%E8%A8%80-1/"><meta property="og:title" content="从汇编角度看C语言 - 1 - 拔电关机"><meta property="og:description" content="反汇编C语言程序的解读。"><meta property="og:image" content="https://www.nbtca.space/preview.png"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://www.nbtca.space/Home/posts/blogs/%E6%8A%80%E6%9C%AF/C%E8%AF%AD%E8%A8%80/%E4%BB%8E%E6%B1%87%E7%BC%96%E8%A7%92%E5%BA%A6%E7%9C%8BC%E8%AF%AD%E8%A8%80-1/"><meta property="twitter:title" content="从汇编角度看C语言 - 1 - 拔电关机"><meta property="twitter:description" content="反汇编C语言程序的解读。"><meta property="twitter:image" content="https://www.nbtca.space/preview.png"><link rel="stylesheet" href="/Home/_astro/about.IndAHwRx.css">
+<link rel="stylesheet" href="/Home/_astro/about.CrRtcgTU.css"></head> <body class="page-article"> <header> <nav class="nav"> <div class="nav-wrapper"> <div class="nav-content-wrapper"> <div class="flex items-center justify-between"> <a href="/" class="nav-title flex items-center gap-3"> <img src="https://oss.nbtca.space/CA-logo.svg" alt="" style="width: 28px; aspect-ratio: 1;"> <span class="hidden md:block"> 拔电关机 </span> </a> <div class="flex items-center"> <div class="px-3 lg:px-4"> <a href="/archive" class="nav-item-content hover:text-[#2997ff] text-nowrap">目录</a> </div><div class="px-3 lg:px-4"> <a href="https://repair.nbtca.space" class="nav-item-content hover:text-[#2997ff] text-nowrap">维修</a> </div><div class="px-3 lg:px-4"> <a href="/calendar" class="nav-item-content hover:text-[#2997ff] text-nowrap">日历</a> </div><div class="px-3 lg:px-4"> <a href="/about" class="nav-item-content hover:text-[#2997ff] text-nowrap">关于我们</a> </div> </div> </div> </div> </div> </nav> </header> <main id="main" class="main"> <section> <article class="article"> <div class="article-header"> <div class="category component"> <div class="component-content"> <div class="category-eyebrow"> <span class="category-eyebrow__category category_original">技术 </span> <span class="category-eyebrow__date">2022 年 3 月 27 日</span> </div> </div> </div> <div class="page-title component"> <div class="component-content"> <h1 class="hero-headline">从汇编角度看C语言 - 1</h1> </div> </div> <div class="article-subhead component"> <div class="component-content">反汇编C语言程序的解读。</div> </div> <div class="tags-sheet component"> <div class="component-content"> <a href="/tags/技术" class="tag"> 技术 </a><a href="/tags/C语言" class="tag"> C语言 </a> </div> </div> </div> <div class="page-body text component"><div class="component-content"><h1 class="page-body-header" id="从汇编角度看-c-语言---1">从汇编角度看 C 语言 - 1</h1>
+<h2 class="page-body-header" id="写在前面">写在前面</h2>
+<blockquote>
+<p>参考书目: 《加密与解密》</p>
+</blockquote>
+<ul>
+<li>系统平台: Windows 10；</li>
+<li>调试工具: OllyDBG (吾爱破解专版) ；</li>
+<li>开发工具: Visual Studio 2008 Debug 模式；</li>
+<li>基础要求: 了解 C 语言和汇编语言；</li>
+<li>大致内容: 简述了一些汇编语言与 C 语言的关系，方便初学者更好的认识程序的底层运行机制。</li>
+</ul>
+<h2 class="page-body-header" id="开始">开始</h2>
+<div class="page-body-copy">用 VS2008 编译如下代码：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Hello World\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">将生成的<strong>可执行文件</strong>拖入<strong>OllyDBG</strong>。</div>
+<h2 class="page-body-header" id="如何寻找-c-程序入口">如何寻找 C 程序入口？</h2>
+<div class="page-body-copy">明确两点：</div>
+<ol>
+<li>mainCRTStartup 和 wmainCRTStartup 是控制台环境下多字节编码和 Unicode 编码的启动函数；</li>
+<li>WinMainCRTStartup 和 wWinMainCRTStartup 是 windows 环境下多字节编码和 Unicode 编码的启动函数。</li>
+</ol>
+<div class="page-body-copy">mainCRTStartup 做了哪些事？</div>
+<div class="page-body-copy">如何通过 mainCRTStartup 来找到 main 函数入口？</div>
+<div class="page-body-copy">以上述程序为例，寻找其<code>main</code>函数入口。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327214647589.Bab5Zk-E_1jmFXh.webp" alt="image-20220327214647589" width="1591" height="826" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">初步调试文件，可以发现许多<code>jmp</code>指令，这是编译器生成的启动代码，往下按 F8 跟随跳转。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327214714185.DWxzLFod_Z21l88J.webp" alt="image-20220327214714185" width="1311" height="224" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">连续按<code>F8</code>来到<code>call tmainCRTStartuptringtionFilter</code>再一次按<code>F8</code>后，整个程序就会返回，因此按<code>F7</code>单步进入该函数。</div>
+<div class="page-body-copy">接下来连续按下<code>F8</code>，并且观察控制台输出：</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327214738686.CVqdc6GG_Z23kpJG.webp" alt="image-20220327214738686" width="1309" height="684" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">发现再<code>call hello.00241140</code>后控制台打出 Hello World，因此在此处设下断点。</div>
+<div class="page-body-copy">按下<code>Ctrl+F2</code>后重新启动程序，按下<code>F9</code>运行到该断点，按下<code>F7</code>单步进入。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327214803763.DHkssoSk_Z1rAJte.webp" alt="image-20220327214803763" width="1303" height="720" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">按几次 F8 后看到如上界面，可以看到 Hello World 字符串，程序的开头即初始化栈帧操作，显然已经成功来到了 main 函数中。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327214826902.8pAipe3j_1MLr0U.webp" alt="image-20220327214826902" width="1018" height="100" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">查看如上高亮的指令，该指令将“Hello World”字符串的首地址压入栈中，而后调用 printf，将字符串打印在控制台上。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327215012755.DzVMFiSu_ZlI73o.webp" alt="image-20220327215012755" width="935" height="668" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">事实也正是如此！</div>
+<h2 class="page-body-header" id="函数">函数</h2>
+<div class="page-body-copy">C 语言程序是由具有不同功能的函数组成的，因此在逆向分析中应将重点放在函数的识别及参数的传递上，这样做可以将注意力集中在某一段代码上。</div>
+<h3 class="page-body-header" id="函数的识别">函数的识别</h3>
+<div class="page-body-copy">下面讨论<strong>函数的识别</strong>：</div>
+<div class="page-body-copy">调用函数的代码保存了一个返回地址，该地址会与参数一起传递给被调用的函数。绝大多数情况下编译器都使用 call 和 ret 指令来调用函数和返回调用位置。</div>
+<div class="page-body-copy">call 指令与跳转指令功能类似，但 call 指令保存返回信息，这里的返回信息实际上主要就是返回地址。</div>
+<div class="page-body-copy">call 指令执行时会将其之后的指令地址压入栈的顶部，当遇到 ret 指令时返回这个地址。</div>
+<div class="page-body-copy">也就是说，call 指令给出的地址就是被调用函数的起始地址，ret 指令用于结束函数的执行。</div>
+<div class="page-body-copy">因此可以通过定位 call 指令或 ret 指令来识别函数，call 的操作数就是所调用函数的首地址。</div>
+<div class="page-body-copy">话不多说，看一个例子。</div>
+<div class="page-body-copy">用 vs2008 编译如下代码，使用 OllyDBG 进行调试：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> x<span class="token punctuation">,</span><span class="token keyword">int</span> y<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">return</span> x<span class="token operator">+</span>y<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> a <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span>b <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+	<span class="token function">add</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">进入 OD 后，依然要越过启动代码，寻找真正的<code>main</code>函数。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220701475.Bw9Zw9XB_Z2qqkVs.webp" alt="image-20220327220701475" width="827" height="491" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">连续按 F8。</div>
+<div class="page-body-copy">按照以往的经验，调用<code>main</code>函数至少在调用<code>GetCommandLine</code>函数之后。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220724315.iXire1-__Z2atljF.webp" alt="image-20220327220724315" width="815" height="116" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">于是这里继续往下执行。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220810610.C6HVT6OJ_2wQouf.webp" alt="image-20220327220810610" width="840" height="90" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">看到这里可以 push 了 3 个参数，发现 argv 和 argc 的字样，那么下一个 call 十有八九会到达<code>main</code>函数了。</div>
+<div class="page-body-copy">按 F7 单步进入。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220839595.CBbf82un_Z2hcUYW.webp" alt="image-20220327220839595" width="900" height="166" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">来到这里就已经很明显了，可以明显的看到下图中由<code>mov ..., 0x5</code>和<code>mov ..., 0x6</code>两个语句，这明显是在给变量赋值上 5 和 6，那么就可以推测<code>call test.00DD135C</code>实际上在调用<code>add</code>函数，将光标移动指令处，按回车键。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220903701.DsN2-oe4_Z1jOETN.webp" alt="image-20220327220903701" width="841" height="452" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">如下图可以看到<code>add</code>字样，因此猜想是对的。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220934315.BUEuv0qF_ZATQDk.webp" alt="image-20220327220934315" width="670" height="118" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">那么回到之前的<code>main</code>函数，可以看到代码将 0x5 和 0x6 放入 rax 和 ecx 寄存器后，又对其进行了压栈操作，实际等价于<code>push 0x5</code>和<code>push 0x6</code>。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327221004603.1-KVt_T4_2ngL1w.webp" alt="image-20220327221004603" width="597" height="170" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">push 操作就是 x86 架构下典型的压栈方式，符合**__cdecl**调用约定(C/C++程序的默认调用约定，在此不作赘述)，在该约定下，可以看到压栈顺序是逆序的，右边的参数先进栈，左边的参数后进栈，栈顶指针 esp 指向栈中第 1 个可用的数据项。</div>
+<div class="page-body-copy">在调用函数时，调用者依次将参数压入栈，然后调用函数。函数被调用以后，在栈中取得数据并进行计算，函数计算结束后，由调用者或者函数本身修改栈，使栈恢复原样(平衡栈数据)。</div>
+<div class="page-body-copy">现在将程序运行到 call 指令之前，查看 OD 的栈区数据，可以看到显示 Arg1=5，Arg2=6，显然这两个参数已经被压栈。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327221037201.Cmroz5V1_13vper.webp" alt="image-20220327221037201" width="475" height="91" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">进入 add 函数后，可以看到程序将 arg1 存入 eax 寄存器，再和 arg2 相加，就完成了计算。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327221100245.BaUqYO4U_24l8Np.webp" alt="image-20220327221100245" width="521" height="172" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">另外还有几种调用约定，如<strong>fastcall</strong>和<strong>stdcall</strong>。</div>
+<h3 class="page-body-header" id="函数的返回值">函数的返回值</h3>
+<div class="page-body-copy">再来讨论<strong>函数的返回值</strong>：</div>
+<div class="page-body-copy">将<code>add</code>函数修改一下，如下所示：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token keyword">int</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> x<span class="token punctuation">,</span><span class="token keyword">int</span> y<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> temp<span class="token punctuation">;</span>
+	temp <span class="token operator">=</span> x <span class="token operator">+</span> y<span class="token punctuation">;</span>
+	<span class="token keyword">return</span> temp<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">进入 OD，再次回到 add 函数中。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327221142426.CgWOXn_0_Z1m3QxH.webp" alt="image-20220327221142426" width="1030" height="306" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>mov eax, [local.2]</code>是将计算的最后结果就保存在 eax 寄存器中，eax 就作为存放返回值的寄存器。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327221206970.DZLbD9lv_2hUVD4.webp" alt="image-20220327221206970" width="909" height="360" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">众所周知，带回返回值的方法不只<code>return</code>，还可传引用，查看如下代码：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+
+<span class="token keyword">void</span> <span class="token function">max</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token operator">*</span> a<span class="token punctuation">,</span><span class="token keyword">int</span><span class="token operator">*</span> b<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">*</span>a <span class="token operator">&#x3C;</span> <span class="token operator">*</span>b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token operator">*</span>a <span class="token operator">=</span> <span class="token operator">*</span>b<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> a <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span>b <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+	<span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">&#x26;</span>a<span class="token punctuation">,</span> <span class="token operator">&#x26;</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"max: %d"</span><span class="token punctuation">,</span>a<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">这里定义了一个<code>max</code>函数，接收<code>a</code>和<code>b</code>的地址，将其中较大数放入变量<code>a</code>中。使用 OD，进入<code>main</code>函数。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220253195.wFhaAqdh_Z11X3HD.webp" alt="image-20220327220253195" width="922" height="408" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">进入<code>max</code>函数，<code>mov eax, [arg.1]</code>和<code>mov ecx, [arg.2]</code>是将参数<code>a</code>和<code>b</code>的值加载到两个寄存器。</div>
+<div class="page-body-copy">可以看到<code>cmp</code>指令，这是一个用于比较大小的指令，紧跟着的是条件跳转指令，表示如果 a&#x3C;b 则不跳转，继续往下执行，这里不多说。</div>
+<div class="page-body-copy">直接看到<code>mov dword ptr ds:[eax], edx</code>。<code>dword ptr</code>是指明数据宽度，而这一步操作就是将结果填入变量 a 所在的内存地址处。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220315921.CO75SwJ5_Yia0c.webp" alt="image-20220327220315921" width="717" height="234" loading="lazy" decoding="async"></div>
+<h2 class="page-body-header" id="数据结构">数据结构</h2>
+<h3 class="page-body-header" id="局部变量">局部变量</h3>
+<div class="page-body-copy">现在来谈谈局部变量。</div>
+<div class="page-body-copy"><strong>局部变量</strong>是函数内部定义的一个变量，其作用域和生命周期局限于所在函数内。从汇编角度看，局部变量分配空间时通常会使用栈和寄存器。</div>
+<div class="page-body-copy">编译如下代码：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> x<span class="token punctuation">,</span><span class="token keyword">int</span> y<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> z<span class="token punctuation">;</span>
+	z <span class="token operator">=</span> x<span class="token operator">+</span>y<span class="token punctuation">;</span>
+	<span class="token keyword">return</span> z<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> a<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span>b<span class="token operator">=</span><span class="token number">6</span><span class="token punctuation">;</span>
+	<span class="token function">add</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">进入<code>add</code>函数，<code>sub esp,0xcc</code>即下降栈顶 0xcc 个字节，实际上是为局部变量开辟空间，同时也在预防栈溢出攻击(一种攻击手法，此处不作赘述)。</div>
+<div class="page-body-copy">这里开辟后的空间一部分是用来存放变量 z 的。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220210074.C-Gfggse_Z2NnL6.webp" alt="image-20220327220210074" width="919" height="407" loading="lazy" decoding="async"></div>
+<div class="page-body-copy"><code>call</code>调用完后，会出现<code>add esp,0x8</code>这步操作实际上是在平衡栈，可以理解为“回收现场”。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220111908.CaAa_oak_uANV.webp" alt="image-20220327220111908" width="980" height="90" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">局部变量的起始值是随机的，是其他函数执行后留在栈中的垃圾数据，因此须要对其进行初始化。</div>
+<h3 class="page-body-header" id="全局变量">全局变量</h3>
+<div class="page-body-copy">而<strong>全局变量</strong>作用于整个程序，它一直存在，放在全局变量的<strong>内存区</strong>中。</div>
+<div class="page-body-copy">局部变量则存在于函数的<strong>栈区</strong>中，函数<strong>调用结束后便会消失</strong>。</div>
+<div class="page-body-copy">在大多数程序中，<strong>常数</strong>一般放在全局变量中。</div>
+<div class="page-body-copy">全局变量通常位于数据区块(.data)的一个固定地址处，当程序要访问全局变量时，一般会用一个固定的硬编码地址直接对内存进行寻址。</div>
+<div class="page-body-copy">如下是示例程序，<code>z</code>是一个全局变量：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+
+<span class="token keyword">int</span> z<span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">int</span> x<span class="token punctuation">,</span><span class="token keyword">int</span> y<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">return</span> x<span class="token operator">+</span>y<span class="token operator">+</span>z<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">int</span> a<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span>b<span class="token operator">=</span><span class="token number">6</span><span class="token punctuation">;</span>
+	z<span class="token operator">=</span><span class="token number">7</span><span class="token punctuation">;</span>
+	<span class="token function">add</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">这里是对 z 赋值，直接用<code>mov</code>将 7 写入一个固定的内存地址。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220033227.N6qhbqVz_Z1rPYpg.webp" alt="image-20220327220033227" width="730" height="76" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">在<code>add</code>函数中，同样直接从固定的地址中取出<code>z</code>的值到 eax 寄存器中。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327220014288.MIMG41xz_Z1DCNXt.webp" alt="image-20220327220014288" width="745" height="90" loading="lazy" decoding="async"></div>
+<h3 class="page-body-header" id="数组">数组</h3>
+<div class="page-body-copy">最后看看<strong>数组</strong>：</div>
+<pre class="language-c"><code is:raw="" class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&#x3C;stdio.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+	<span class="token keyword">static</span> <span class="token keyword">int</span> a<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token punctuation">{</span><span class="token number">0x11</span><span class="token punctuation">,</span><span class="token number">0x22</span><span class="token punctuation">,</span><span class="token number">0x33</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> i<span class="token punctuation">,</span>s<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>b<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&#x3C;</span><span class="token number">3</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>
+	<span class="token punctuation">{</span>
+		s<span class="token operator">=</span>s<span class="token operator">+</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+		b<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">=</span>s<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+
+	<span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&#x3C;</span><span class="token number">3</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>
+	<span class="token punctuation">{</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span>b<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div class="page-body-copy">一般对数组的访问是通过基址加变址寻址实现的。</div>
+<div class="page-body-copy"><img  src="/Home/_astro/image-20220327215920733.Bhg_3-z5_ZbMkdA.webp" alt="image-20220327215920733" width="876" height="105" loading="lazy" decoding="async"></div>
+<div class="page-body-copy">在内存中数组可存在于栈、数据段及动态内存中，本例中<code>a[]</code>数组就保存在数据段.data 中，其寻址用“基址+偏移量”实现。</div>
+<div class="page-body-copy"><code>b[]</code>数组放在栈中，这些栈在编译时分配。数组在声明时可以直接计算偏移地址，针对数组成员寻址时是采用实际的偏移量完成的。</div></div></div> <div class="component"> <div class="component-content"> <div class="article-copyright"> <a class="content" href="https://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）
+</a> <p class="content">
+作者： [object Object] 发表日期：2022 年 3 月 27 日 </p> </div> </div> </div> </article> </section> </main> <div class="footer-main"> <div class="content-body footer-wrapper"> <div class="footer-box"> <div class="foot-nav"> <div class="foot-nav-items"> <div class="item"> <div class="logo">拔电关机</div> <div class="email">Email: contact@nbtca.space</div> </div> <div class="item products"> <div class="item-title">作品</div> <a href="/" target="_blank">本站</a> <a href="https://repair.nbtca.space" target="_blank">维修管理</a> </div> <div class="item community"> <div class="item-title">社媒</div> <a href="https://github.com/nbtca" target="_blank">Github</a> </div> <div class="item resources"> <div class="item-title">友链</div> <a href="https://www.cnblogs.com/N3ptune">N3ptune</a> </div> </div> </div> <div class="flex flex-col md:flex-row items-center md:items-end text-sm pt-3 pb-1"> <div class="">
+&copy; 2018-2024  Computer Association <a href="//github.com/austin2035/astro-air-blog">astro-air-blog</a> </div> <div> <a href="https://beian.miit.gov.cn/" target="_blank" class="text-xs ml-2">浙ICP备2021030831</a> </div> </div> </div> </div> </div> <script>
+      var script = document.createElement("script")
+      script.src = "/static/js/initPost.js"
+      document.head.appendChild(script)
+      </script> </body> </html>
